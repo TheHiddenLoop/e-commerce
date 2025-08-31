@@ -1,9 +1,12 @@
-import React from 'react'
+import { Login } from "./pages/Login"
+import { Signup } from "./pages/Signup"
 
-export default function App() {
+export default function Page() {
   return (
-    <div>
-      <h1>Hii There</h1>
-    </div>
+    <main className="min-h-screen bg-bgPrimary">
+      <section>
+        <Signup />
+      </section>
+    </main>
   )
 }
