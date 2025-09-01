@@ -4,6 +4,7 @@ import cors from "cors";
 import connectDB from "./config/db.js";
 import authRouter from "./routes/authRoutes.js";
 import session from "express-session";
+import cookieparser from "cookie-parser"
 import passport from "./config/passport.js";
 
 dotenv.config();
@@ -11,7 +12,7 @@ connectDB();
 
 const PORT = process.env.PORT || 5000;
 const app = express();
-
+app.use(cookieparser());
 app.use(cors({
   origin: process.env.FRONTEND_URL,
   credentials: true

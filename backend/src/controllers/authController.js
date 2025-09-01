@@ -45,6 +45,7 @@ export const signup = async (req, res) => {
           _id: newUser._id,
           name: newUser.name,
           email: newUser.email,
+          isVerified: false,
         },
       });
     }
@@ -179,6 +180,7 @@ export const verifyOtp = async (req, res) => {
     user.isVerified = true;
     user.otp = null;
     user.otpExpires = null;
+
     await user.save();
     
     userToken(user._id, res);//for token verification
@@ -190,6 +192,7 @@ export const verifyOtp = async (req, res) => {
         _id: user._id,
         name: user.name,
         email: user.email,
+        isVerified: user.isVerified
       },
     });
 

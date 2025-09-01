@@ -7,7 +7,6 @@ import { handleFacebookAuth } from "../services/facebookAuthService.js";
 
 dotenv.config();
 
-// ✅ Google OAuth Strategy
 passport.use(
   new GoogleStrategy(
     {
@@ -26,7 +25,6 @@ passport.use(
   )
 );
 
-// ✅ Facebook OAuth Strategy
 passport.use(
   new FacebookStrategy(
     {
@@ -46,9 +44,8 @@ passport.use(
   )
 );
 
-// ✅ Session Management
 passport.serializeUser((user, done) => {
-  done(null, user.id); // save only id in session
+  done(null, user.id); 
 });
 
 passport.deserializeUser(async (id, done) => {

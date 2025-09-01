@@ -1,20 +1,36 @@
 import { useState } from "react"
 import { Eye, EyeOff, Lock, Mail, User } from "lucide-react"
+import { Link } from "react-router-dom"
+import { useDispatch, useSelector } from "react-redux";
+import { signupAuth } from "../features/authentication/authSlice";
+import {
+  selectAuthStatus,
+  selectAuthError,
+} from "../features/authentication/authSelectors";
+import { useNavigate } from "react-router-dom";
 
 export function Signup() {
   const [isVisible, setIsVisible] = useState(false);
-  const [formData, setFormData]=useState({
-    name:"",
-    email:"",
-    password:""
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    password: "",
   });
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const status = useSelector(selectAuthStatus);
+  const error = useSelector(selectAuthError);
 
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    console.log(formData);
-    
-    console.log("Form submitted")
+  const handleSubmit = async (e) => {
+  e.preventDefault();
+  if (!formData.name || !formData.email || !formData.password) return;
+
+  const resultAction = await dispatch(signupAuth(formData));
+  if (signupAuth.fulfilled.match(resultAction)) {
+    navigate("/verify-otp");
   }
+};
+
 
   return (
     <div className="min-h-screen bg-bgPrimary flex justify-center items-center p-4 transition-skin">
@@ -26,94 +42,102 @@ export function Signup() {
           Sign up to get started
         </p>
 
-        <div className="mb-4">
-          <label
-            htmlFor="name"
-            className="block text-textPrimary font-medium mb-2 text-xs"
-          >
-            Full Name
-          </label>
-          <div className="relative">
-            <input
-              id="name"
-              type="text"
-              placeholder="Enter your name"
-              value={formData.name}
-              onChange={(e)=>setFormData({...formData, name:e.target.value})}
-              className="w-full pl-10 pr-3 py-3 rounded-lg bg-bgPrimary border border-border text-textPrimary focus:border-primary focus:ring-1 focus:ring-[var(--bg-glass)] outline-none transition-skin placeholder-textSecondary/60 text-sm"
-            />
-            <User className="absolute left-3 top-3 w-4 h-4 text-textSecondary" />
-          </div>
-        </div>
-
-        <div className="mb-4">
-          <label
-            htmlFor="email"
-            className="block text-textPrimary font-medium mb-2 text-xs"
-          >
-            Email Address
-          </label>
-          <div className="relative">
-            <input
-              id="email"
-              type="email"
-              value={formData.email}
-              onChange={(e)=>setFormData({...formData, email:e.target.value})}
-              placeholder="Enter your email"
-              className="w-full pl-10 pr-3 py-3 rounded-lg bg-bgPrimary border border-border text-textPrimary focus:border-primary focus:ring-1 focus:ring-[var(--bg-glass)] outline-none transition-skin placeholder-textSecondary/60 text-sm"
-            />
-            <Mail className="absolute left-3 top-3 w-4 h-4 text-textSecondary" />
-          </div>
-        </div>
-
-        <div className="mb-4">
-          <label
-            htmlFor="password"
-            className="block text-textPrimary font-medium mb-2 text-xs"
-          >
-            Password
-          </label>
-          <div className="relative">
-            <input
-              id="password"
-              type={isVisible ? "text" : "password"}
-              placeholder="Enter your password"
-              value={formData.password}
-              onChange={(e)=>setFormData({...formData, password:e.target.value})}
-              className="w-full pl-10 pr-10 py-3 rounded-lg bg-bgPrimary border border-border text-textPrimary focus:border-primary focus:ring-1 focus:ring-[var(--bg-glass)] outline-none transition-skin placeholder-textSecondary/60 text-sm"
-            />
-            <Lock className="absolute left-3 top-3 w-4 h-4 text-textSecondary" />
-            <button
-              type="button"
-              onClick={() => setIsVisible(!isVisible)}
-              className="absolute right-3 top-3 text-textSecondary hover:text-textPrimary focus:outline-none transition-skin"
-              aria-label={isVisible ? "Hide password" : "Show password"}
+        <form onSubmit={handleSubmit}>
+          <div className="mb-4">
+            <label
+              htmlFor="name"
+              className="block text-textPrimary font-medium mb-2 text-xs"
             >
-              {isVisible ? (
-                <EyeOff className="w-4 h-4" />
-              ) : (
-                <Eye className="w-4 h-4" />
-              )}
-            </button>
+              Full Name
+            </label>
+            <div className="relative">
+              <input
+                id="name"
+                type="text"
+                placeholder="Enter your name"
+                value={formData.name}
+                onChange={(e) =>
+                  setFormData({ ...formData, name: e.target.value })
+                }
+                className="w-full pl-10 pr-3 py-3 rounded-lg bg-bgPrimary border border-border text-textPrimary focus:border-primary focus:ring-1 focus:ring-[var(--bg-glass)] outline-none transition-skin placeholder-textSecondary/60 text-sm"
+              />
+              <User className="absolute left-3 top-3 w-4 h-4 text-textSecondary" />
+            </div>
           </div>
-        </div>
 
-        <div className="mb-6 text-right">
-          <a
-            href="#"
-            className="text-primary hover:text-secondary text-xs font-medium transition-skin hover:underline"
+          <div className="mb-4">
+            <label
+              htmlFor="email"
+              className="block text-textPrimary font-medium mb-2 text-xs"
+            >
+              Email Address
+            </label>
+            <div className="relative">
+              <input
+                id="email"
+                type="email"
+                value={formData.email}
+                onChange={(e) =>
+                  setFormData({ ...formData, email: e.target.value })
+                }
+                placeholder="Enter your email"
+                className="w-full pl-10 pr-3 py-3 rounded-lg bg-bgPrimary border border-border text-textPrimary focus:border-primary focus:ring-1 focus:ring-[var(--bg-glass)] outline-none transition-skin placeholder-textSecondary/60 text-sm"
+              />
+              <Mail className="absolute left-3 top-3 w-4 h-4 text-textSecondary" />
+            </div>
+          </div>
+
+          <div className="mb-4">
+            <label
+              htmlFor="password"
+              className="block text-textPrimary font-medium mb-2 text-xs"
+            >
+              Password
+            </label>
+            <div className="relative">
+              <input
+                id="password"
+                type={isVisible ? "text" : "password"}
+                placeholder="Enter your password"
+                value={formData.password}
+                onChange={(e) =>
+                  setFormData({ ...formData, password: e.target.value })
+                }
+                className="w-full pl-10 pr-10 py-3 rounded-lg bg-bgPrimary border border-border text-textPrimary focus:border-primary focus:ring-1 focus:ring-[var(--bg-glass)] outline-none transition-skin placeholder-textSecondary/60 text-sm"
+              />
+              <Lock className="absolute left-3 top-3 w-4 h-4 text-textSecondary" />
+              <button
+                type="button"
+                onClick={() => setIsVisible(!isVisible)}
+                className="absolute right-3 top-3 text-textSecondary hover:text-textPrimary focus:outline-none transition-skin"
+                aria-label={isVisible ? "Hide password" : "Show password"}
+              >
+                {isVisible ? (
+                  <EyeOff className="w-4 h-4" />
+                ) : (
+                  <Eye className="w-4 h-4" />
+                )}
+              </button>
+            </div>
+          </div>
+
+          <div className="mb-6 text-right">
+            <Link
+              to={"/forget-password"}
+              className="text-primary hover:text-secondary text-xs font-medium transition-skin hover:underline"
+            >
+              Forgot password?
+            </Link>
+          </div>
+
+          <button
+            type="submit" 
+            disabled={status === "loading"}
+            className="w-full bg-primary text-white font-semibold py-3 rounded-lg transition-skin focus:outline-none transform hover:scale-[1.02] active:scale-[0.98] mb-6 shadow-skin text-sm"
           >
-            Forgot password?
-          </a>
-        </div>
-
-        <button
-          type="submit"
-          onClick={handleSubmit}
-          className="w-full bg-primary text-white font-semibold py-3 rounded-lg transition-skin focus:outline-none transform hover:scale-[1.02] active:scale-[0.98] mb-6 shadow-skin text-sm"
-        >
-          Sign Up
-        </button>
+            {status === "loading" ? "Signing up..." : "Sign Up"}
+          </button>
+        </form>
 
         <div className="flex items-center mb-6">
           <div className="flex-1 h-px bg-border" />
@@ -139,15 +163,15 @@ export function Signup() {
         <div className="text-center">
           <span className="text-textSecondary text-xs">
             Already have an account?{" "}
-            <a
-              href="#"
+            <Link
+              to={"/login"}
               className="text-primary hover:text-secondary font-medium transition-skin hover:underline"
             >
               Sign in
-            </a>
+            </Link>
           </span>
         </div>
       </div>
     </div>
-  )
+  );
 }

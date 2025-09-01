@@ -28,17 +28,18 @@ authRouter.post("/logout", protectRoute, logout);
 
 authRouter.get(
   "/google",
-  passport.authenticate("google", { scope: ["profile", "email"] })
+  passport.authenticate("google", { scope: ["profile", "email"], session: false })
 );
 
 authRouter.get(
   "/google/callback",
-  passport.authenticate("google", { failureRedirect: "/" }),
+  passport.authenticate("google", { failureRedirect: "/", session: false }),
   (req, res) => {
     userToken(req.user._id, res);
     res.redirect(process.env.FRONTEND_URL + "/auth/success");
   }
 );
+
 
 
 
