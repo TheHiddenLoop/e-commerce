@@ -8,6 +8,7 @@ import {
   selectAuthError,
 } from "../features/authentication/authSelectors";
 import { useNavigate } from "react-router-dom";
+import { googleOAuth, facebook } from "../libs/oAuth";
 
 export function Signup() {
   const [isVisible, setIsVisible] = useState(false);
@@ -32,9 +33,10 @@ export function Signup() {
 };
 
 
+
   return (
-    <div className="min-h-screen bg-bgPrimary flex justify-center items-center p-4 transition-skin">
-      <div className="bg-bgSecondary p-6 rounded-xl shadow-skin w-full max-w-sm border border-border backdrop-blur-sm">
+    <div className="min-h-[calc(100vh-65px)] bg-bgPrimary flex justify-center items-center p-3 transition-skin">
+      <div className="bg-bgSecondary px-6 py-4 rounded-xl shadow-skin w-full max-w-sm border border-border backdrop-blur-sm">
         <h1 className="text-center text-2xl font-bold text-textPrimary mb-2">
           Create Account
         </h1>
@@ -150,12 +152,14 @@ export function Signup() {
         <div className="flex justify-center gap-4 mb-6">
           <img
             src="/google.png"
+            onClick={googleOAuth}
             alt="Google Login"
             className="w-8 h-8 cursor-pointer hover:scale-110 transition-transform"
           />
           <img
             src="/facebook.png"
             alt="Facebook Login"
+            onClick={facebook}
             className="w-8 h-8 cursor-pointer hover:scale-110 transition-transform"
           />
         </div>

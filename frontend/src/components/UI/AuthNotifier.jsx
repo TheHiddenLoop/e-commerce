@@ -8,6 +8,7 @@ export  function AuthNotifier() {
   const dispatch = useDispatch();
   const status = useSelector(selectAuthStatus);
   const error = useSelector(selectAuthError);
+  const authUser=useSelector(selectAuth);
 
   // refs to avoid duplicate toasts
   const successShown = useRef(false);
@@ -19,10 +20,12 @@ export  function AuthNotifier() {
       successShown.current = false;
       errorShown.current = false;
     }
+    console.log(authUser);
+    
 
     // 🔹 Show success toast once
     if (status === "succeeded" && !successShown.current) {
-      toast.success("Action completed successfully!");
+      toast.success(authUser.message);
       successShown.current = true;
     }
 

@@ -12,7 +12,7 @@ export function ForgetPassword() {
   };
 
   return (
-    <div className="min-h-screen bg-bgPrimary flex justify-center items-center p-4 transition-skin">
+    <div className="min-h-[calc(100vh-65px)] bg-bgPrimary flex justify-center items-center p-4 transition-skin">
       <form
         onSubmit={handleSubmit}
         className="bg-bgSecondary p-6 rounded-xl shadow-skin w-full max-w-sm border border-border backdrop-blur-sm"

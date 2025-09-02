@@ -14,7 +14,7 @@ export const signup = async (formData) => {
     const res = await axiosInstance.post("auth/signup", formData);
     console.log(res.data.user);
     
-    return res.data.user; 
+    return res.data; 
   } catch (err) {
     const message =
       err.response?.data?.message || err.message || "Signup failed";
@@ -26,7 +26,7 @@ export const verifyOtp = async (formData) => {
   try {
     const res = await axiosInstance.post("auth/verify-otp", formData);
     
-    return res.data.user; 
+    return res.data; 
   } catch (err) {
     const message =
       err.response?.data?.message || err.message || "Signup failed";
@@ -37,7 +37,7 @@ export const verifyOtp = async (formData) => {
 export const signin = async (formData) => {
   try {
     const res = await axiosInstance.post("/auth/login", formData);
-    return res.data.user; 
+    return res.data; 
   } catch (err) {
     const message =
       err.response?.data?.message || err.message || "Signin failed";

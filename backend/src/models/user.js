@@ -60,6 +60,18 @@ const userSchema = new mongoose.Schema(
   }
 );
 
+userSchema.set("toJSON", {
+  transform: (doc, ret) => {
+    delete ret.password;
+    delete ret.otp;
+    delete ret.otpExpires;
+    delete ret.resetPasswordToken;
+    delete ret.resetPasswordExpires;
+    delete ret.__v;
+    return ret;
+  },
+});
+
 const User = mongoose.model("User", userSchema);
 
 export default User;

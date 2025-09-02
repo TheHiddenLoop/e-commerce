@@ -1,6 +1,5 @@
-// tailwind.config.js
 module.exports = {
-  darkMode: "class", // enable dark mode with .dark class
+  darkMode: "class", 
   content: [
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
@@ -8,9 +7,9 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        primary: "var(--primary-color)",       // main brand
-        secondary: "var(--secondary-color)",   // secondary brand
-        accent: "var(--accent-color)",         // accent/highlight
+        primary: "var(--primary-color)",       
+        secondary: "var(--secondary-color)",  
+        accent: "var(--accent-color)",         
 
         textPrimary: "var(--text-primary)",
         textSecondary: "var(--text-secondary)",
@@ -21,16 +20,16 @@ module.exports = {
         border: "var(--border-glass)",
         ring: "var(--bg-glass)",
 
-        success: "var(--success, #16a34a)",   // fallback green
-        error: "var(--error, #dc2626)",       // fallback red
-        warning: "var(--warning, #facc15)",   // fallback yellow
-        info: "var(--info, #3b82f6)",         // fallback blue
+        success: "var(--success, #16a34a)",  
+        error: "var(--error, #dc2626)",    
+        warning: "var(--warning, #facc15)",   
+        info: "var(--info, #3b82f6)",         
       },
       boxShadow: {
-        skin: "var(--shadow-glass)", // matches your CSS variable
+        skin: "var(--shadow-glass)", 
       },
       transitionProperty: {
-        skin: "all", // smooth transitions
+        skin: "all", 
       },
       fontFamily: {
         poppins: ['Poppins', 'sans-serif'],

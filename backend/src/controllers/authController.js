@@ -41,12 +41,10 @@ export const signup = async (req, res) => {
       return res.status(201).json({
         success: true,
         message: "User registered. OTP sent to email.",
-        user: {
           _id: newUser._id,
           name: newUser.name,
           email: newUser.email,
           isVerified: false,
-        },
       });
     }
 
@@ -62,11 +60,9 @@ export const signup = async (req, res) => {
       return res.status(200).json({
         success: true,
         message: "User updated. OTP re-sent to email.",
-        user: {
           _id: existingUser._id,
           name: existingUser.name,
           email: existingUser.email,
-        },
       });
     }
 
@@ -129,12 +125,10 @@ export const login = async (req, res) => {
     return res.status(200).json({
       success: true,
       message: `Welcome back, ${user.name.charAt(0).toUpperCase() + user.name.slice(1)}!`,
-      user: {
         _id: user._id,
         name: user.name,
         email: user.email,
         isVerified: user.isVerified
-      },
     });
 
   } catch (error) {
@@ -188,12 +182,10 @@ export const verifyOtp = async (req, res) => {
     return res.status(200).json({
       success: true,
       message: "Account verified successfully.",
-      user: {
         _id: user._id,
         name: user.name,
         email: user.email,
         isVerified: user.isVerified
-      },
     });
 
   } catch (error) {

@@ -12,6 +12,8 @@ import { useEffect } from "react";
 import { Loader } from "lucide-react";
 import {Toaster} from "react-hot-toast"
 import {AuthNotifier} from "./components/UI/AuthNotifier"
+import { Navbar } from "./components/Navbar";
+import Layout from "./components/UI/Layout";
 
 export default function Page() {
   const dispatch = useDispatch();
@@ -31,8 +33,9 @@ export default function Page() {
     );
   }
   return (
-    <main className="min-h-screen bg-bgPrimary">
+    <main className="min-h-screen bg-bgSecondary">
       <Toaster />
+      <Layout />
       <AuthNotifier />
       <Routes>
         <Route
