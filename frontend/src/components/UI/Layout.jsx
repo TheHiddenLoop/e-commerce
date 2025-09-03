@@ -12,7 +12,7 @@ export default function Layout() {
 
       <div className="flex-1 flex flex-col">
         <Navbar onClick={() => setIsOpen(!isOpen)} />
-        <main className="flex-1 overflow-auto p-6">
+        <main className="flex-1 overflow-auto p-6" id="home">
           <Outlet />
         </main>
       </div>

@@ -1,8 +1,22 @@
 import { MenuIcon, ShoppingBag, ShoppingCart } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export function Navbar({ onClick }) {
   const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => setIsScrolled(window.scrollY > 50);
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const scrollToSection = (sectionId) => {
+    const el = document.getElementById(sectionId.toLowerCase());
+    if (el) el.scrollIntoView({ behavior: "smooth" });
+  };
+
+  const navItems = ["Home", "Shop", "Categories", "Deals", "Support"];
+
   return (
     <div className={`fixed top-0 left-0 right-0 z-[500] bg-bgGlass backdrop-blur-[20px] border-b border-b-border h-16 ${isScrolled ? "shadow-glass" : ""
       }`}>
@@ -19,21 +33,25 @@ export function Navbar({ onClick }) {
 
         <div className="flex items-start gap-10">
           <ul className="gap-6 items-center hidden md:flex h-full">
-            {["Home", "Shop", "Categories", "Deals", "Support"].map((item, idx) => (
+            {navItems.map((item, idx) => (
               <li
                 key={idx}
                 className="cursor-pointer px-2 py-1"
-                onClick={() => scrollToSection(item)}
               >
-                <span
-                  className="relative text-textSecondary font-medium
+                <a
+                  href={`#${item.toLowerCase()}`}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    scrollToSection(item);
+                  }}
+                  className="relative text-textPrimary font-medium
              after:content-[''] after:absolute after:-bottom-1 after:left-0
              after:h-[2px] after:w-0 after:bg-primary
              after:transition-all after:duration-300 after:ease-in-out
              hover:after:w-full hover:text-primary"
                 >
                   {item}
-                </span>
+                </a>
               </li>
             ))}
           </ul>
