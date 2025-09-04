@@ -68,14 +68,12 @@ html {
   box-shadow: var(--shadow-glass);
 }
 
-/* Gradient text */
 .text-gradient {
   background: linear-gradient(135deg, var(--primary-color), var(--secondary-color), var(--accent-color));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
-/* Button gradient */
 .btn-gradient {
   background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
   transition: all 0.3s ease;
@@ -85,7 +83,7 @@ html {
   box-shadow: 0 10px 25px rgba(139, 92, 246, 0.3);
 }
 
-/* Animations */
+
 @keyframes float {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-15px); }
@@ -112,6 +110,23 @@ html {
 
 .scrollBar{
   scrollbar-width: none;
+}
+
+.fade-in {
+  opacity: 0;
+  transform: translateY(30px);
+  animation: fadeIn 0.8s ease-out forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 

@@ -15,7 +15,7 @@ export function Navbar({ onClick }) {
     if (el) el.scrollIntoView({ behavior: "smooth" });
   };
 
-  const navItems = ["Home", "Shop", "Categories", "Deals", "Support"];
+  const navItems = ["Home", "Shop", "Categories", "Review", "Support"];
 
   return (
     <div className={`fixed top-0 left-0 right-0 z-[500] bg-bgGlass backdrop-blur-[20px] border-b border-b-border h-16 ${isScrolled ? "shadow-glass" : ""

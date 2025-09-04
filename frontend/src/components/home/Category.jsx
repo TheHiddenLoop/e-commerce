@@ -18,7 +18,7 @@ export function Category() {
         });
     };
     return (
-        <div className="px-4 md:px-20 py-8 min-h-screen">
+        <div className="px-4 md:px-20 py-8 ">
             <div className="flex flex-col sm:flex-row justify-between items-center sm:items-center mb-8">
                 <h2 className="text-3xl md:text-4xl font-bold text-textPrimary mb-4 sm:mb-0">
                     Shop Our Collection

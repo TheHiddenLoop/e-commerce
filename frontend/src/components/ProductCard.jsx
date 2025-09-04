@@ -1,7 +1,17 @@
+import { useInView } from "react-intersection-observer";
+
 export function ProductCard({ name, description, image, price }) {
+  const { ref, inView } = useInView({
+    triggerOnce: true,
+    threshold: 0.2,
+  });
+
   return (
-    <div className="flex flex-col bg-bgPrimary rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 w-full sm:h-[500px] max-w-xs sm:max-w-[14rem] md:max-w-[15rem]">
-      
+    <div
+      ref={ref}
+      className={`flex flex-col bg-bgPrimary rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-700 transform w-full sm:h-[500px] max-w-xs sm:max-w-[14rem] md:max-w-[15rem] 
+        ${inView ? "fade-in" : ""}`}
+    >
       <div className="p-3">
         <div className="h-56 md:h-64 rounded-md w-full overflow-hidden">
           <img
