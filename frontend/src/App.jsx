@@ -6,7 +6,7 @@ import { Signup } from "./pages/Signup";
 import { VerifyOtp } from "./pages/VerifyOtp";
 import { Home } from "./pages/Home";
 import { useDispatch, useSelector } from "react-redux";
-import { selectAuth, selectAuthError, selectAuthStatus, selectAuthStatusCheck } from "./features/authentication/authSelectors";
+import { selectAuth, authUserCheck, selectAuthStatus, selectAuthStatusCheck } from "./features/authentication/authSelectors";
 import { checkAuth } from "./features/authentication/authSlice";
 import { useEffect } from "react";
 import { Loader } from "lucide-react";
@@ -14,24 +14,28 @@ import {Toaster} from "react-hot-toast"
 import {AuthNotifier} from "./components/UI/AuthNotifier"
 import { Navbar } from "./components/Navbar";
 import Layout from "./components/UI/Layout";
+import {Cart} from "./pages/Cart"
+import ShopPage from "./pages/ShopPage";
 
 export default function Page() {
   const dispatch = useDispatch();
 
   const authUser = useSelector(selectAuth);
   const statusCheck = useSelector(selectAuthStatusCheck);
+  const auth = useSelector(authUserCheck);
 
   useEffect(() => {
     dispatch(checkAuth());
   }, [dispatch]);
-
-  if (statusCheck === "loading") {
+  
+  if (statusCheck === "loading" && !auth) {
     return (
       <div className="flex items-center justify-center h-screen">
         <Loader className="w-10 h-10 animate-spin" />
       </div>
     );
   }
+  
   return (
     <main className="min-h-screen bg-bgSecondary">
       <Toaster />
@@ -40,16 +44,26 @@ export default function Page() {
       <Routes>
         <Route
           path="/"
-          element={authUser && authUser.isVerified ? <Home /> : <Navigate to="/login" replace />}
+          element={auth ? <Home /> : <Navigate to="/login" replace />}
+        />
+
+        <Route
+          path="/cart"
+          element={auth ? <Cart /> : <Navigate to="/login" replace />}
+        />
+
+        <Route
+          path="/products"
+          element={auth ? <ShopPage /> : <Navigate to="/login" replace />}
         />
 
         <Route
           path="/login"
-          element={authUser && authUser.isVerified ? <Navigate to="/" replace /> : <Login />}
+          element={auth ? <Navigate to="/" replace /> : <Login />}
         />
         <Route
           path="/signup"
-          element={authUser && authUser.isVerified ? <Navigate to="/" replace /> : <Signup />}
+          element={auth ? <Navigate to="/" replace /> : <Signup />}
         />
 
         <Route path="/forget-password" element={<ForgetPassword />} />

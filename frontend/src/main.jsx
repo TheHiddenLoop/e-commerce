@@ -9,13 +9,12 @@ import { Provider } from 'react-redux'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <Provider store={store}>
     <BrowserRouter>
-      <DarkModeProvider>
-        <App />
-      </DarkModeProvider>
+      <Provider store={store}>
+        <DarkModeProvider>
+          <App />
+        </DarkModeProvider>
+      </Provider>
     </BrowserRouter>
-    </Provider>
-
   </StrictMode>,
 )

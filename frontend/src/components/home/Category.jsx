@@ -2,9 +2,21 @@ import { ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 import { CategoryCard } from "../CategoryCard";
 import { categories } from "../../libs/product";
 import { useRef } from "react";
+import { useSelector } from "react-redux";
+import { selectProduct } from "../../features/products/productSelectors";
 
 export function Category() {
     const carouselRef = useRef(null);
+
+    const products=useSelector(selectProduct);
+    
+    const filteredProduct = products.reduce((acc, e) => {
+    if (!acc.some(item => item.category === e.subCategory)) {
+        acc.push({ category: e.subCategory, image: e.images[0] });
+    }
+    return acc;
+    }, []);    
+
 
     const scroll = (direction) => {
         if (!carouselRef.current) return;
@@ -36,7 +48,7 @@ export function Category() {
                     ref={carouselRef}
                     className="scrollBar flex gap-6 overflow-x-auto scroll-smooth no-scrollbar sm:mx-5 md:mx-[80px] py-2"
                 >
-                    {categories.map((item, index) => (
+                    {filteredProduct.map((item, index) => (
                         <div key={index} className="flex-shrink-0">
                             <CategoryCard
                                 image={item.image}

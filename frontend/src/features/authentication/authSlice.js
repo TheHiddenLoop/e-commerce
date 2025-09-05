@@ -75,9 +75,10 @@ const authSlice = createSlice({
   name: "auth",
   initialState: {
     user: null,
-    status: "idle", // for login/signup
+    status: "idle", 
     error: null,
-    statusCheck: "idle", // for checkAuth loader
+    statusCheck: "loading", 
+    authUser: false
   },
   reducers: {
     clearError: (state) => {
@@ -133,10 +134,12 @@ const authSlice = createSlice({
       .addCase(checkAuth.fulfilled, (state, action) => {
         state.statusCheck = "succeeded";
         state.user = action.payload;
+        state.authUser=action.payload.isVerified;
       })
       .addCase(checkAuth.rejected, (state) => {
         state.statusCheck = "failed";
         state.user = null;
+        state.authUser = false;
       })
       // Logout
       .addCase(logoutAuth.pending, (state) => {

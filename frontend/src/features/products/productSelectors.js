@@ -1,0 +1,3 @@
+export const selectProduct = (state) => state.product.products;
+export const selectProductStatus = (state) => state.product.status;
+export const selectProductError = (state) => state.product.error;

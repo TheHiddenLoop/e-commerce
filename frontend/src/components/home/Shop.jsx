@@ -1,10 +1,16 @@
 import { useRef } from "react";
 import { ProductCard } from "../ProductCard";
-import { products } from "../../libs/product";
 import { ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
+import { selectProduct } from "../../features/products/productSelectors";
+import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 
 export default function ShopCarousel() {
-  const carouselRef = useRef(null);
+  const carouselRef = useRef(null);  
+    
+  const products=useSelector(selectProduct);
+  const filterdProduct=products.filter(e=>e.isFeatured)
+  
 
   const scroll = (direction) => {
     if (!carouselRef.current) return;
@@ -24,12 +30,14 @@ export default function ShopCarousel() {
         <h2 className="text-3xl md:text-4xl font-bold text-textPrimary mb-4 sm:mb-0">
           Shop Our Collection
         </h2>
-        <button
+        <Link to={"/products"}>
+          <button
           className="flex items-center gap-2 font-semibold bg-primary text-white px-5 py-3 rounded-full shadow-sm hover:shadow-md transition-shadow ml-[30%] my-3 sm:my-0 md:ml-0"
         >
           Show All Products
           <ArrowRight size={20} />
         </button>
+        </Link>
       </div>
 
       <div className="relative overflow-hidden">
@@ -37,10 +45,10 @@ export default function ShopCarousel() {
           ref={carouselRef}
           className="scrollBar flex gap-6 overflow-x-auto scroll-smooth no-scrollbar sm:mx-5 md:mx-20 py-2"
         >
-          {products.map((item, index) => (
+          {filterdProduct.map((item, index) => (
             <div key={index} className="flex-shrink-0"> 
               <ProductCard
-                image={item.image}
+                image={item.images[0]}
                 name={item.name}
                 description={item.description}
                 price={item.price}

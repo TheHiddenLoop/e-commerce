@@ -188,3 +188,118 @@ export const categories = [
     image: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&w=800&q=80"
   }
 ];
+
+
+
+export const dummyCartData = [
+  {
+    id: 1,
+    name: "PC system All in One APPLE iMac (2023) mqrq3ro/a, Apple M3, 24\" Retina 4.5K, 8GB, SSD 256GB, 10-core GPU, Keyboard layout INT",
+    price: 1499,
+    quantity: 2,
+    image: "https://flowbite.s3.amazonaws.com/blocks/e-commerce/imac-front.svg",
+    category: "Computers",
+    brand: "Apple",
+    inStock: true,
+    originalPrice: 1699
+  },
+  {
+    id: 2,
+    name: "Restored Apple Watch Series 8 (GPS) 41mm Midnight Aluminum Case with Midnight Sport Band",
+    price: 598,
+    quantity: 1,
+    image: "https://flowbite.s3.amazonaws.com/blocks/e-commerce/apple-watch-light.svg",
+    category: "Wearables",
+    brand: "Apple",
+    inStock: true,
+    originalPrice: 649
+  },
+  {
+    id: 3,
+    name: "Apple - MacBook Pro 16\" Laptop, M3 Pro chip, 36GB Memory, 18-core GPU, 512GB SSD, Space Black",
+    price: 1799,
+    quantity: 1,
+    image: "https://flowbite.s3.amazonaws.com/blocks/e-commerce/macbook-pro-light.svg",
+    category: "Laptops",
+    brand: "Apple",
+    inStock: true,
+    originalPrice: 1999
+  },
+  {
+    id: 4,
+    name: "Tablet APPLE iPad Pro 12.9\" 6th Gen, 128GB, Wi-Fi, Gold",
+    price: 699,
+    quantity: 1,
+    image: "https://flowbite.s3.amazonaws.com/blocks/e-commerce/ipad-light.svg",
+    category: "Tablets",
+    brand: "Apple",
+    inStock: true,
+    originalPrice: 799
+  },
+  {
+    id: 5,
+    name: "APPLE iPhone 15 5G phone, 256GB, Gold",
+    price: 999,
+    quantity: 3,
+    image: "https://flowbite.s3.amazonaws.com/blocks/e-commerce/iphone-light.svg",
+    category: "Smartphones",
+    brand: "Apple",
+    inStock: true,
+    originalPrice: 1099
+  },
+  {
+    id: 6,
+    name: "Sony WH-1000XM5 Wireless Industry Leading Noise Canceling Headphones",
+    price: 349,
+    quantity: 1,
+    image: "https://images.unsplash.com/photo-1583394838336-acd977736f90?w=150&h=150&fit=crop&crop=center",
+    category: "Audio",
+    brand: "Sony",
+    inStock: true,
+    originalPrice: 399
+  },
+  {
+    id: 7,
+    name: "Samsung 65\" QLED 4K Smart TV (QN90A Series)",
+    price: 1299,
+    quantity: 1,
+    image: "https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=150&h=150&fit=crop&crop=center",
+    category: "TVs",
+    brand: "Samsung",
+    inStock: false,
+    originalPrice: 1499
+  },
+  {
+    id: 8,
+    name: "Nintendo Switch OLED Model with Neon Blue and Neon Red Joy‑Con",
+    price: 349,
+    quantity: 2,
+    image: "https://images.unsplash.com/photo-1606144042614-b2417e99c4e3?w=150&h=150&fit=crop&crop=center",
+    category: "Gaming",
+    brand: "Nintendo",
+    inStock: true,
+    originalPrice: 349
+  },
+  {
+    id: 9,
+    name: "Canon EOS R5 Mirrorless Digital Camera Body",
+    price: 3499,
+    quantity: 1,
+    image: "https://images.unsplash.com/photo-1606983340126-99ab4feaa64a?w=150&h=150&fit=crop&crop=center",
+    category: "Cameras",
+    brand: "Canon",
+    inStock: true,
+    originalPrice: 3899
+  },
+  {
+    id: 10,
+    name: "Dyson V15 Detect Cordless Vacuum Cleaner",
+    price: 649,
+    quantity: 1,
+    image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=150&h=150&fit=crop&crop=center",
+    category: "Home Appliances",
+    brand: "Dyson",
+    inStock: true,
+    originalPrice: 749
+  }
+];

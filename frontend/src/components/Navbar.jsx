@@ -1,8 +1,11 @@
 import { MenuIcon, ShoppingBag, ShoppingCart } from "lucide-react";
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export function Navbar({ onClick }) {
   const [isScrolled, setIsScrolled] = useState(false);
+  const navigate=useNavigate();
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 50);
@@ -11,8 +14,11 @@ export function Navbar({ onClick }) {
   }, []);
 
   const scrollToSection = (sectionId) => {
-    const el = document.getElementById(sectionId.toLowerCase());
+    navigate("/");
+    setTimeout(()=>{
+      const el = document.getElementById(sectionId.toLowerCase());
     if (el) el.scrollIntoView({ behavior: "smooth" });
+    },500)
   };
 
   const navItems = ["Home", "Shop", "Categories", "Review", "Support"];
@@ -60,7 +66,8 @@ export function Navbar({ onClick }) {
             <div className="relative cursor-pointer flex items-center h-full">
               <div className="w-8 h-8 bg-bgSecondary hover:bg-ring border border-border hover:border-primary/40 rounded-lg flex items-center justify-center transition-all duration-300 group-hover:scale-110">
 
-                <ShoppingBag
+                <Link to={"/cart"}>
+                  <ShoppingBag
                   size={20}
                   className="absolute text-primary/0 group-hover:text-primary/20 transition-all duration-300"
                   fill="currentColor"
@@ -74,6 +81,7 @@ export function Navbar({ onClick }) {
                   stroke="currentColor"
                   strokeWidth={1.5}
                 />
+                </Link>
               </div>
 
               <span className="absolute -top-2 -right-2 w-5 h-5 bg-primary text-white rounded-full flex items-center justify-center text-xs font-bold shadow-lg">

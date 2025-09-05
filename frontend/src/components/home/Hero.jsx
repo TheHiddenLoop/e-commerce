@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
-import { images } from "../../libs/imageSample"
+// import { images } from "../../libs/imageSample"
+import { selectProduct } from "../../features/products/productSelectors";
+import { useSelector } from "react-redux";
 export function Hero() {
     const [isVisible, setIsVisible] = useState(false);
 
@@ -7,6 +9,13 @@ export function Hero() {
         setIsVisible(true);
     }, []);
 
+    const products=useSelector(selectProduct);
+    const images=products.map(e=>{
+        if(e.images && e.images.length >= 1){
+            return e.images[1]
+        }
+    })
+    
     const [current, setCurrent] = useState(0);
 
     useEffect(() => {
