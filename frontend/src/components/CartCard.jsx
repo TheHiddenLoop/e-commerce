@@ -1,29 +1,31 @@
-import { useState } from "react";
-import { Heart, X, Plus, Minus } from 'lucide-react';
-
+import { useState, useEffect } from "react";
+import { X, Plus, Minus } from 'lucide-react';
 
 export const CartCard = ({ 
   product, 
   onQuantityChange, 
-  onRemove
+  onRemove,
+  onVariantChange
 }) => {
   const [quantity, setQuantity] = useState(product.quantity);
+  const [selectedSize, setSelectedSize] = useState(product.selectedSize || product.sizes?.[0] || "");
+  const [selectedColor, setSelectedColor] = useState(product.selectedColor || product.colors?.[0] || "");
+
+  useEffect(() => {
+    if (onVariantChange) {
+      onVariantChange(product.id, { selectedColor, selectedSize });
+    }
+  }, [selectedColor, selectedSize]);
 
   const handleQuantityChange = (newQuantity) => {
-    if (newQuantity >= 1) {
+    if (newQuantity >= 1 && newQuantity <= product.stock) {
       setQuantity(newQuantity);
       onQuantityChange(product.id, newQuantity);
     }
   };
 
-  const handleDecrement = () => {
-    handleQuantityChange(quantity - 1);
-  };
-
-  const handleIncrement = () => {
-    handleQuantityChange(quantity + 1);
-  };
-
+  const handleDecrement = () => handleQuantityChange(quantity - 1);
+  const handleIncrement = () => handleQuantityChange(quantity + 1);
   const handleInputChange = (e) => {
     const value = parseInt(e.target.value) || 1;
     handleQuantityChange(value);
@@ -45,7 +47,7 @@ export const CartCard = ({
             <button 
               type="button"
               onClick={handleDecrement}
-              className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-md border border-border bg-bgSecondary hover:bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary/30 transition-skin"
+              className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-border bg-bgSecondary hover:bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary/30 transition-skin"
             >
               <Minus className="h-3 w-3 text-textPrimary" />
             </button>
@@ -55,13 +57,15 @@ export const CartCard = ({
               value={quantity}
               onChange={handleInputChange}
               min="1"
-              className="w-12 shrink-0 border-0 bg-transparent text-center text-sm font-medium text-textPrimary focus:outline-none focus:ring-0"
+              max={product.stock}
+              className="w-12 text-center text-sm font-medium text-textPrimary bg-transparent border-0 focus:outline-none focus:ring-0"
             />
             
             <button 
               type="button"
               onClick={handleIncrement}
-              className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-md border border-border bg-bgSecondary hover:bg-primary/10 focus:outline-none focus:ring-2 focus:ring-primary/30 transition-skin"
+              disabled={quantity >= product.stock}
+              className="inline-flex h-8 w-8 items-center justify-center rounded-md border border-border bg-bgSecondary hover:bg-primary/10 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-primary/30 transition-skin"
             >
               <Plus className="h-3 w-3 text-textPrimary" />
             </button>
@@ -69,7 +73,7 @@ export const CartCard = ({
           
           <div className="text-end md:order-4 md:w-32 ml-4">
             <p className="text-base font-bold text-textPrimary">
-              ${(product.price * quantity).toLocaleString()}
+              ₹{(product.price * quantity).toLocaleString()}
             </p>
           </div>
         </div>
@@ -104,16 +108,47 @@ export const CartCard = ({
             </div>
           )}
 
-          <div className="flex items-center gap-4">
-
+          <div className="flex items-center gap-4 flex-wrap">
             <button 
               type="button"
-              onClick={() => onRemove(product.id)}
+              onClick={onRemove}
               className="inline-flex items-center text-sm font-medium text-error hover:text-error/80 transition-skin"
             >
               <X className="mr-1.5 h-4 w-4" />
               Remove
             </button>
+
+            {product.colors?.length > 0 && (
+              <div className="flex items-center gap-2">
+                {product.colors.map((color) => (
+                  <button
+                    key={color}
+                    type="button"
+                    onClick={() => setSelectedColor(color)}
+                    className={`h-6 w-6 rounded-full border-2 transition ${
+                      selectedColor === color
+                        ? "border-primary scale-110"
+                        : "border-border"
+                    }`}
+                    style={{ backgroundColor: color.toLowerCase() }}
+                  />
+                ))}
+              </div>
+            )}
+
+            {product.sizes?.length > 0 && (
+              <select
+                value={selectedSize}
+                onChange={(e) => setSelectedSize(e.target.value)}
+                className="px-2 py-1 border border-border rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
+              >
+                {product.sizes.map((size) => (
+                  <option key={size} value={size}>
+                    {size}
+                  </option>
+                ))}
+              </select>
+            )}
           </div>
         </div>
       </div>

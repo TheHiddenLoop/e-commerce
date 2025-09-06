@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 // import { images } from "../../libs/imageSample"
 import { selectProduct } from "../../features/products/productSelectors";
 import { useSelector } from "react-redux";
+import {Link} from "react-router-dom"
 export function Hero() {
     const [isVisible, setIsVisible] = useState(false);
 
@@ -47,9 +48,11 @@ export function Hero() {
 
 
                     <div className="flex justify-center sm:justify-start sm:flex-row gap-8 md:gap-4 pt-2">
-                        <button className="btn-gradient text-white px-6 py-3 rounded-xl font-semibold text-base shadow-md hover:shadow-lg transition">
+                        <Link to={"/products"}>
+                            <button className="btn-gradient text-white px-6 py-3 rounded-xl font-semibold text-base shadow-md hover:shadow-lg transition">
                             Shop Collection
                         </button>
+                        </Link>
                         <button className="glass text-primary px-6 py-3 rounded-xl font-semibold text-base hover:bg-opacity-30 transition">
                             Watch Story
                         </button>

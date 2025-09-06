@@ -2,10 +2,12 @@ import { MenuIcon, ShoppingBag, ShoppingCart } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { selectCartCount } from "../features/cart/cartSelectors";
 
 export function Navbar({ onClick }) {
   const [isScrolled, setIsScrolled] = useState(false);
-  const navigate=useNavigate();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 50);
@@ -15,11 +17,13 @@ export function Navbar({ onClick }) {
 
   const scrollToSection = (sectionId) => {
     navigate("/");
-    setTimeout(()=>{
+    setTimeout(() => {
       const el = document.getElementById(sectionId.toLowerCase());
-    if (el) el.scrollIntoView({ behavior: "smooth" });
-    },500)
+      if (el) el.scrollIntoView({ behavior: "smooth" });
+    }, 500)
   };
+
+  const counts = useSelector(selectCartCount)
 
   const navItems = ["Home", "Shop", "Categories", "Review", "Support"];
 
@@ -68,25 +72,29 @@ export function Navbar({ onClick }) {
 
                 <Link to={"/cart"}>
                   <ShoppingBag
-                  size={20}
-                  className="absolute text-primary/0 group-hover:text-primary/20 transition-all duration-300"
-                  fill="currentColor"
-                  stroke="none"
-                />
+                    size={20}
+                    className="absolute text-primary/0 group-hover:text-primary/20 transition-all duration-300"
+                    fill="currentColor"
+                    stroke="none"
+                  />
 
-                <ShoppingBag
-                  size={20}
-                  className="relative text-textSecondary group-hover:text-primary transition-all duration-300"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth={1.5}
-                />
+                  <ShoppingBag
+                    size={20}
+                    className="relative text-textSecondary group-hover:text-primary transition-all duration-300"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth={1.5}
+                  />
                 </Link>
               </div>
 
-              <span className="absolute -top-2 -right-2 w-5 h-5 bg-primary text-white rounded-full flex items-center justify-center text-xs font-bold shadow-lg">
-                2
+              <span
+                className={`absolute -top-2 -right-2 w-5 h-5 bg-primary text-white rounded-full flex items-center justify-center text-xs font-bold shadow-lg ${counts > 0 ? "flex" : "hidden"
+                  }`}
+              >
+                {counts}
               </span>
+
             </div>
 
 

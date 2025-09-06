@@ -1,6 +1,6 @@
 import { useInView } from "react-intersection-observer";
 
-export function ProductCard({ name, description, image, price }) {
+export function ProductCard({ name, description, image, price,onclick }) {
   const { ref, inView } = useInView({
     triggerOnce: true,
     threshold: 0.2,
@@ -30,8 +30,8 @@ export function ProductCard({ name, description, image, price }) {
 
         <div className="flex items-center justify-between mt-2">
           <p className="text-primary font-bold text-lg">{price}</p>
-          <button className="btn-gradient text-white px-4 py-2 rounded-xl font-semibold text-sm shadow-md hover:shadow-lg transition">
-            Buy Now
+          <button onClick={onclick} className="btn-gradient text-white px-4 py-2 rounded-xl font-semibold text-sm shadow-md hover:shadow-lg transition">
+            Add to Cart
           </button>
         </div>
       </div>

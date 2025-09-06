@@ -3,6 +3,7 @@ import { selectProduct } from "../features/products/productSelectors";
 import { ProductCard } from "../components/ProductCard";
 import { getProducts } from "../features/products/productSlice";
 import { useEffect } from "react";
+import { addCart } from "../features/cart/cartSlice";
 
 export default function ShopPage() {
   const dispatch = useDispatch();
@@ -11,6 +12,13 @@ export default function ShopPage() {
   useEffect(() => {
     dispatch(getProducts());
   }, [dispatch]);
+
+
+  const handleAddCart=async (data) => {
+    const formData={ productId:data._id, price:data.price, size:data.size, color:data.color }    
+    dispatch(addCart(formData));
+  }
+
 
   return (
     <div>
@@ -23,6 +31,7 @@ export default function ShopPage() {
               name={item.name}
               description={item.description}
               price={item.price}
+              onclick={()=>handleAddCart(item)}
             />
           </div>
         ))}

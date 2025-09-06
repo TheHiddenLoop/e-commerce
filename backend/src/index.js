@@ -7,6 +7,7 @@ import session from "express-session";
 import cookieparser from "cookie-parser"
 import passport from "./config/passport.js";
 import productRouter from "./routes/productRoutes.js";
+import cartRouter from "./routes/cartRoutes.js";
 
 dotenv.config();
 connectDB();
@@ -25,6 +26,8 @@ app.use(passport.initialize());
 
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/product",  productRouter);
+app.use("/api/v1/cart",  cartRouter);
+
 
 
 app.get("/", (req, res) => {

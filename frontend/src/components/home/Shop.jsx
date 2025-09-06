@@ -2,15 +2,16 @@ import { useRef } from "react";
 import { ProductCard } from "../ProductCard";
 import { ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
 import { selectProduct } from "../../features/products/productSelectors";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import { addCart } from "../../features/cart/cartSlice";
 
 export default function ShopCarousel() {
   const carouselRef = useRef(null);  
     
   const products=useSelector(selectProduct);
   const filterdProduct=products.filter(e=>e.isFeatured)
-  
+  const dispatch=useDispatch();
 
   const scroll = (direction) => {
     if (!carouselRef.current) return;
@@ -23,6 +24,11 @@ export default function ShopCarousel() {
       behavior: "smooth",
     });
   };
+
+  const handleAddCart=async (data) => {
+    const formData={ productId:data._id, price:data.price, size:data.size, color:data.color }    
+    dispatch(addCart(formData));
+  }
 
   return (
     <div className="px-4 md:px-20 py-8 min-h-screen">
@@ -52,6 +58,7 @@ export default function ShopCarousel() {
                 name={item.name}
                 description={item.description}
                 price={item.price}
+                onclick={()=>handleAddCart(item)}
               />
             </div>
           ))}

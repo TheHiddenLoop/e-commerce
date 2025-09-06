@@ -20,12 +20,12 @@ export const OrderSummary = ({
           <div className="space-y-2">
             <dl className="flex items-center justify-between gap-4">
               <dt className="text-base font-normal text-textSecondary">Original price</dt>
-              <dd className="text-base font-medium text-textPrimary">${subtotal.toLocaleString()}</dd>
+              <dd className="text-base font-medium text-textPrimary">₹{subtotal.toLocaleString()}</dd>
             </dl>
 
             <dl className="flex items-center justify-between gap-4">
               <dt className="text-base font-normal text-textSecondary">Savings</dt>
-              <dd className="text-base font-medium text-success">-${savings.toLocaleString()}</dd>
+              <dd className="text-base font-medium text-success">-₹{savings.toLocaleString()}</dd>
             </dl>
 
             <dl className="flex items-center justify-between gap-4">
@@ -34,20 +34,20 @@ export const OrderSummary = ({
                 {shipping === 0 ? (
                   <span className="text-success font-semibold">FREE</span>
                 ) : (
-                  `$${shipping}`
+                  `₹${shipping}`
                 )}
               </dd>
             </dl>
 
             <dl className="flex items-center justify-between gap-4">
               <dt className="text-base font-normal text-textSecondary">Tax</dt>
-              <dd className="text-base font-medium text-textPrimary">${tax}</dd>
+              <dd className="text-base font-medium text-textPrimary">₹{tax}</dd>
             </dl>
           </div>
 
           <dl className="flex items-center justify-between gap-4 border-t border-border pt-2">
             <dt className="text-base font-bold text-textPrimary">Total</dt>
-            <dd className="text-base font-bold text-textPrimary">${total.toLocaleString()}</dd>
+            <dd className="text-base font-bold text-textPrimary">₹{total.toLocaleString()}</dd>
           </dl>
         </div>
 

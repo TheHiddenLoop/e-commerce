@@ -1,10 +1,17 @@
 import { Outlet } from "react-router-dom";
 import { Sidebar } from "../Sidebar";
 import { Navbar } from "../Navbar";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { allCart } from "../../features/cart/cartSlice";
+import { useDispatch } from "react-redux";
+
 
 export default function Layout() {
   const [isOpen, setIsOpen] = useState(false);
+  const dispatch=useDispatch();
+  useEffect(()=>{
+    dispatch(allCart());
+  },[]);
 
   return (
     <div className="flex h-16 overflow-hidden bg-bgPrimary text-textPrimary">
