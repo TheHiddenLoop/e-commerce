@@ -21,8 +21,7 @@ export default function ShopPage() {
 
 
   return (
-    <div>
-      <h1>Hi There</h1>
+    <div className="min-h-[calc(100vh-65px)] bg-[radial-gradient(circle_at_20%_80%,rgba(59,130,246,0.08)_0%,transparent_50%),radial-gradient(circle_at_80%_20%,rgba(16,185,129,0.08)_0%,transparent_50%)] text-textPrimary px-6 md:px-20">
       <div className="flex flex-wrap gap-4">
         {products.map((item) => (
           <div key={item._id} className="flex-shrink-0">
