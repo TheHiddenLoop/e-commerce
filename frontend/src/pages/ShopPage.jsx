@@ -1,8 +1,8 @@
 import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
 import { selectProduct } from "../features/products/productSelectors";
 import { ProductCard } from "../components/ProductCard";
 import { getProducts } from "../features/products/productSlice";
-import { useEffect } from "react";
 import { addCart } from "../features/cart/cartSlice";
 
 export default function ShopPage() {
@@ -21,19 +21,43 @@ export default function ShopPage() {
 
 
   return (
-    <div className="min-h-[calc(100vh-65px)] bg-[radial-gradient(circle_at_20%_80%,rgba(59,130,246,0.08)_0%,transparent_50%),radial-gradient(circle_at_80%_20%,rgba(16,185,129,0.08)_0%,transparent_50%)] text-textPrimary px-6 md:px-20">
-      <div className="flex flex-wrap gap-4">
-        {products.map((item) => (
-          <div key={item._id} className="flex-shrink-0">
-            <ProductCard
-              image={item.images[0]}
-              name={item.name}
-              description={item.description}
-              price={item.price}
-              onclick={()=>handleAddCart(item)}
-            />
+    <div className="min-h-[calc(100vh-65px)] bg-Secondary text-textPrimary px-6 md:px-20 py-10">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+        
+        <div className="bg-Secondary p-4 md:col-span-1">
+          <h1 className="text-xl font-semibold mb-4">Filter Area</h1>
+          <p className="text-gray-400 text-sm">
+            (Filters like price, category, color, size can go here)
+          </p>
+        </div>
+
+        <div className="md:col-span-3">
+          <h1 className="text-2xl md:text-3xl font-semibold mb-6">Shop Our Products</h1>
+
+          <div className="flex flex-wrap gap-6">
+            {products.length > 0 ? (
+              products.map((item) => (
+                <div
+                  key={item._id}
+                  className="flex-shrink-0 w-full sm:w-[calc(50%-12px)] md:w-[calc(33.33%-16px)] lg:w-[calc(25%-18px)]"
+                >
+                  <ProductCard
+                    id={item._id}
+                    image={item.images?.[0]}
+                    name={item.name}
+                    description={item.description}
+                    price={item.price}
+                    cart={true}
+                    buy={true}
+                    onclick={() => handleAddCart(item)}
+                  />
+                </div>
+              ))
+            ) : (
+              <p className="text-gray-400 text-lg mt-10">No products available</p>
+            )}
           </div>
-        ))}
+        </div>
       </div>
     </div>
   );

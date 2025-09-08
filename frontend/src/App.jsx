@@ -16,6 +16,7 @@ import { Navbar } from "./components/Navbar";
 import Layout from "./components/UI/Layout";
 import {Cart} from "./pages/Cart"
 import ShopPage from "./pages/ShopPage";
+import { ProductDetails } from "./pages/ProductDetails";
 
 export default function Page() {
   const dispatch = useDispatch();
@@ -55,6 +56,11 @@ export default function Page() {
         <Route
           path="/products"
           element={auth ? <ShopPage /> : <Navigate to="/login" replace />}
+        />
+
+        <Route
+          path="/product-details/:id"
+          element={auth ? <ProductDetails /> : <Navigate to="/login" replace />}
         />
 
         <Route

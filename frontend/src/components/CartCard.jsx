@@ -37,7 +37,7 @@ export const CartCard = ({
         <div className="shrink-0 md:order-1">
           <img 
             className="h-20 w-20 rounded-lg object-cover transition-skin hover:scale-105" 
-            src={product.image} 
+            src={product.image || null} 
             alt={product.name}
           />
         </div>

@@ -58,6 +58,7 @@ export default function ShopCarousel() {
                 name={item.name}
                 description={item.description}
                 price={item.price}
+                cart={true}
                 onclick={()=>handleAddCart(item)}
               />
             </div>

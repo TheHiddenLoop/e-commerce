@@ -10,3 +10,14 @@ export const getAllProduct = async () => {
     throw new Error(message);
   }
 };
+
+export const viewProductApi = async (id) => {
+  try {
+    const res = await axiosInstance.get("product/view-product/"+id);
+    return res.data.product; 
+  } catch (err) {
+    const message =
+      err.response?.data?.message || err.message || "Failed to fetch product";
+    throw new Error(message);
+  }
+};
