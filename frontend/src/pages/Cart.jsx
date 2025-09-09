@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ShoppingCart, ArrowRight } from 'lucide-react';
 import { CartCard } from "../components/CartCard";
 import { OrderSummary } from "../components/OrderSummary";
@@ -7,10 +7,24 @@ import { allCart } from "../features/cart/cartSlice";
 import { selectCart, selectCardStatus } from "../features/cart/cartSelectors";
 import { removeCart } from "../features/cart/cartSlice";
 import { Link } from "react-router-dom";
+import LoadingBar from "react-top-loading-bar";
 
 export const Cart = () => {
   const cartProducts = useSelector(selectCart);
   const dispatch = useDispatch();
+  const loading=useSelector(selectCardStatus);
+  const loadingRef = useRef(null);
+
+//----
+  useEffect(() => {
+    if (loading ==="loading") {
+      loadingRef.current.continuousStart(); 
+    } else {
+      loadingRef.current.complete(); 
+    }
+  }, [loading]);
+
+  //----
 
   const normalizeCart = (items) =>
     items.map((item) => ({
@@ -114,6 +128,7 @@ export const Cart = () => {
   
   return (
     <section className="bg-[radial-gradient(circle_at_25%_85%,rgba(245,158,11,0.1)_0%,transparent_50%),radial-gradient(circle_at_75%_15%,rgba(244,63,94,0.1)_0%,transparent_50%)] py-8 antialiased md:py-16 min-h-[calc(100vh-65px)]">
+      <LoadingBar className="relative top-16" color="#8B5CF6" ref={loadingRef} shadow={true} />
       <div className="mx-auto max-w-screen-xl px-4 2xl:px-0">
         <div className="flex items-center gap-2 mb-6">
           <ShoppingCart className="h-6 w-6 text-primary" />

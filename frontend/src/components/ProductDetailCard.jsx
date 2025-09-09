@@ -130,7 +130,7 @@ export function ProductDetailCard({ images, name, originalPrice, discountPercent
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
             <motion.button
               whileTap={{ scale: 0.95 }}
-              onClick={onAddCart}
+              onClick={()=>onAddCart(quantity)}
               className="w-full sm:w-auto px-4 sm:px-6 py-2 sm:py-3 bg-primary text-white rounded-lg sm:rounded-xl shadow hover:opacity-90"
             >
               Add to Cart

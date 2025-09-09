@@ -17,6 +17,7 @@ import Layout from "./components/UI/Layout";
 import {Cart} from "./pages/Cart"
 import ShopPage from "./pages/ShopPage";
 import { ProductDetails } from "./pages/ProductDetails";
+import Order from "./components/Order";
 
 export default function Page() {
   const dispatch = useDispatch();
@@ -61,6 +62,11 @@ export default function Page() {
         <Route
           path="/product-details/:id"
           element={auth ? <ProductDetails /> : <Navigate to="/login" replace />}
+        />
+
+        <Route
+          path="/order"
+          element={auth ? <Order /> : <Navigate to="/login" replace />}
         />
 
         <Route

@@ -18,9 +18,12 @@ export function ProductDetails() {
   }, [id, dispatch]);
 
   console.log(product);
-      
-const handleAddCart=async (data) => {
-    const formData={ productId:data._id, price:data.price, size:data.size, color:data.color }    
+
+  const handleAddCart = async (quantity) => {
+
+    const formData = { productId: product._id, price: product.price, size: product.size, color: product.color, quantity: quantity }
+    console.log(formData);
+
     dispatch(addCart(formData));
   }
 
@@ -29,7 +32,7 @@ const handleAddCart=async (data) => {
     <div className="min-h-[calc(100vh-65px)] bg-[radial-gradient(circle_at_25%_85%,rgba(245,158,11,0.1)_0%,transparent_50%),radial-gradient(circle_at_75%_15%,rgba(244,63,94,0.1)_0%,transparent_50%)] px-6 md:px-20 py-8">
       <ProductDetailCard images={product?.images || []} name={product.name} originalPrice={product.price} discountPercent={product.discount} description={product.description}
         colors={product?.colors || []}
-        onAddCart={()=>handleAddCart(product)}
+        onAddCart={handleAddCart}
       />
     </div>
   )

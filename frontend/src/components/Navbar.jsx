@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { selectCartCount } from "../features/cart/cartSelectors";
+import logo from "../assets/logo2.png"
 
 export function Navbar({ onClick }) {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -36,7 +37,7 @@ export function Navbar({ onClick }) {
             <MenuIcon size={24} />
           </div>
           <div className="h-[85px] w-auto">
-            <img src="logo2.png" alt="CltX Logo" className="h-full w-auto" />
+            <img src={logo} alt="CltX Logo" className="h-full w-auto" />
           </div>
 
         </div>

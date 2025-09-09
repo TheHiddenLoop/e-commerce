@@ -1,17 +1,18 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { addCartApi, allCartApi, removeCartApi } from "./cartApi";
-
+import toast  from "react-hot-toast";
 
 export const addCart = createAsyncThunk(
   "cart/addCart",
   async (formData, thunkAPI) => {
     try {
-      const data = await addCartApi(formData);
-      return data; 
+      const data = await addCartApi(formData); 
+      toast.success(data.message);           
+      return data.cart;                       
     } catch (err) {
-      return thunkAPI.rejectWithValue(
-        err.response?.data?.message || err.message
-      );
+      const message = err.response?.data?.message || err.message;
+      toast.error(message);                   
+      return thunkAPI.rejectWithValue(message);
     }
   }
 );
@@ -20,12 +21,12 @@ export const allCart = createAsyncThunk(
   "cart/allCart",
   async (_, thunkAPI) => {
     try {
-      const data = await allCartApi();
-      return data; 
+      const data = await allCartApi();  
+      return data.cart;                  
     } catch (err) {
-      return thunkAPI.rejectWithValue(
-        err.response?.data?.message || err.message
-      );
+      const message = err.response?.data?.message || err.message;
+      toast.error(message);
+      return thunkAPI.rejectWithValue(message);
     }
   }
 );
@@ -34,15 +35,17 @@ export const removeCart = createAsyncThunk(
   "cart/removeCart",
   async ({ cartId, productId }, thunkAPI) => {
     try {
-      const data = await removeCartApi(cartId, productId);      
-      return data; 
+      const data = await removeCartApi(cartId, productId);
+      toast.success(data.message);
+      return data.cart;
     } catch (err) {
-      return thunkAPI.rejectWithValue(
-        err.response?.data?.message || err.message
-      );
+      const message = err.response?.data?.message || err.message;
+      toast.error(message);
+      return thunkAPI.rejectWithValue(message);
     }
   }
 );
+
 
 const cartSlice = createSlice({
   name: "cart",
