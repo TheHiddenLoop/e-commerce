@@ -1,76 +1,134 @@
-import { Check, User, MapPin, CreditCard } from "lucide-react";
-import { useState } from "react";
-import Payment from "../components/Payment";
-import ProductOverView from "../components/ProductOverView";
-import UserInfo from "../components/UserInfo";
-
+import React, { useState } from "react";
+import InputField from "../components/UI/InputField";
+import { User, Mail, Phone, MapPin, Home, Plus } from "lucide-react";
+import { useLocation } from "react-router-dom";
 
 export default function CheckoutPage() {
-    const [step, setStep] = useState(1);
-    const steps = [
-        { number: 1, title: "Personal Information", icon: User },
-        { number: 2, title: "Shipping Details", icon: MapPin },
-        { number: 3, title: "Payment Information", icon: CreditCard }
-    ];
+  const [addressOption, setAddressOption] = useState("saved");
+  const location = useLocation();
 
-    return (
-        <div className="min-h-[calc(100vh-65px)] bg-[radial-gradient(circle_at_20%_20%,rgba(251,191,36,0.1)_0%,transparent_50%),radial-gradient(circle_at_80%_80%,rgba(249,115,22,0.1)_0%,transparent_50%)] text-textPrimary px-6 md:px-20">
-            <div className="flex justify-center gap-4 md:gap-[10px] items-center mb-6 pt-4">
-                {steps.map((s, index) => {
-                    const Icon = s.icon;
-                    const isActive = step === s.number;
-                    const isCompleted = step > s.number;
+  const { orderDetails } = location.state || {};
+  const savedAddress = {
+    name: "Angech Chauhan",
+    street: "123 MG Road",
+    city: "Indore",
+    state: "MP",
+    zip: "452001",
+    country: "India",
+    phone: "+91-1234567890",
+  };
 
-                    return (
-                        <div key={s.number} className="flex items-center">
-                            <div
-                                className={`flex items-center justify-center w-10 h-10 rounded-full border-2 transition-skin ${isCompleted
-                                    ? "bg-success border-success text-white"
-                                    : isActive
-                                        ? "bg-primary border-primary text-white"
-                                        : "border-border text-textSecondary"
-                                    }`}
-                            >
-                                {isCompleted ? <Check size={20} /> : <Icon size={20} />}
-                            </div>
+  console.log(orderDetails);
+  const deliveryCharge=45;
+  const total=orderDetails.total+deliveryCharge;
 
-                            {index < steps.length - 1 && (
-                                <div
-                                    className={`w-16 md:w-72 h-0.5 mx-2 transition-skin ${isCompleted ? "bg-success" : "bg-border"
-                                        }`}
-                                />
-                            )}
-                        </div>
-                    );
-                })}
+  return (
+    <div className="max-w-6xl mx-auto px-6 py-12 font-poppins">
+      <div className="grid md:grid-cols-2 gap-10">
+        <div>
+          <h2 className="text-2xl font-bold text-textPrimary mb-6">
+            Delivery Information
+          </h2>
+
+          <div className="mb-6 grid grid-cols-2 gap-4">
+            <button
+              type="button"
+              onClick={() => setAddressOption("saved")}
+              className={`flex items-center gap-3 p-2 md:p-4 border rounded-lg transition-all shadow-sm 
+                ${
+                  addressOption === "saved"
+                    ? "border-primary bg-primary/10 text-primary"
+                    : "border-border bg-bgPrimary text-textSecondary hover:border-primary"
+                }`}
+            >
+              <Home
+                className={`w-5 h-5 ${
+                  addressOption === "saved" ? "text-primary" : "text-gray-500"
+                }`}
+              />
+              <span className="font-medium">Saved Address</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setAddressOption("new")}
+              className={`flex items-center gap-3 p-4 border rounded-lg transition-all shadow-sm 
+                ${
+                  addressOption === "new"
+                    ? "border-primary bg-primary/10 text-primary"
+                    : "border-border bg-bgPrimary text-textSecondary hover:border-primary"
+                }`}
+            >
+              <Plus
+                className={`w-5 h-5 ${
+                  addressOption === "new" ? "text-primary" : "text-gray-500"
+                }`}
+              />
+              <span className="font-medium">New Address</span>
+            </button>
+          </div>
+
+          {addressOption === "saved" && (
+            <div className="bg-bgPrimary border border-border rounded-lg p-5 shadow-sm space-y-2 text-textSecondary">
+              <p className="font-medium text-textPrimary">{savedAddress.name}</p>
+              <p>{savedAddress.street}</p>
+              <p>
+                {savedAddress.city}, {savedAddress.state} - {savedAddress.zip}
+              </p>
+              <p>{savedAddress.country}</p>
+              <p>{savedAddress.phone}</p>
             </div>
+          )}
 
-            {step === 1 && (
-                <UserInfo />
-            )}
-            {step === 2 && (
-                <ProductOverView />
-            )}
-            {step === 3 && (
-                <Payment />
-            )}
+          {addressOption === "new" && (
+            <form className="space-y-4">
+              <div className="grid grid-cols-2 gap-4">
+                <InputField placeholder="First Name" icon={User} />
+                <InputField placeholder="Last Name" icon={User} />
+              </div>
 
-            <div className="flex justify-between mt-6 reltive bottom-10">
-                {step > 1 && (
-                    <button
-                        onClick={() => setStep(step - 1)}
-                        className="px-4 py-2 bg-bgSecondary text-textPrimary border border-border rounded-lg hover:bg-secondary hover:text-white transition-skin"
-                    >
-                        Prev
-                    </button>
-                )}
-                <button
-                    onClick={() => setStep(step < 3 ? step + 1 : step)}
-                    className="px-4 py-2 bg-primary text-white rounded-lg ml-auto hover:bg-secondary transition-skin"
-                >
-                    {step < 3 ? "Next" : "Finish"}
-                </button>
-            </div>
+              <InputField type="email" placeholder="Email" icon={Mail} />
+              <InputField placeholder="Street Address" icon={MapPin} />
+
+              <div className="grid grid-cols-2 gap-4">
+                <InputField placeholder="City" icon={MapPin} />
+                <InputField placeholder="State" icon={MapPin} />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <InputField placeholder="Zip Code" />
+                <InputField placeholder="Country" />
+              </div>
+
+              <InputField type="tel" placeholder="Phone" icon={Phone} />
+            </form>
+          )}
         </div>
-    )
+
+        <div>
+          <h2 className="text-2xl font-bold text-textPrimary mb-6">
+            Payable Amount
+          </h2>
+          <div className="bg-bgPrimary border border-border rounded-lg p-6 shadow-skin space-y-3">
+            <div className="flex justify-between text-textSecondary">
+              <span>Subtotal</span>
+              <span>₹{orderDetails.total}</span>
+            </div>
+            <div className="flex justify-between text-textSecondary">
+              <span>Delivery Fee</span>
+              <span>₹{deliveryCharge}</span>
+            </div>
+            <div className="flex justify-between font-semibold text-textPrimary text-lg border-t border-border pt-3">
+              <span>Total</span>
+              <span>₹{total}</span>
+            </div>
+
+            <button className="mt-6 w-full bg-primary hover:bg-accent text-white py-3 rounded-lg font-semibold transition-skin">
+              Proceed To Payment
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 }

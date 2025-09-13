@@ -1,14 +1,14 @@
 import { ArrowRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 
-export const OrderSummary = ({ 
-  subtotal, 
-  savings, 
-  shipping, 
-  tax, 
-  total, 
-  onCheckout, 
-  onContinueShopping 
+export const OrderSummary = ({
+  subtotal,
+  shipping,
+  tax,
+  total,
+  onContinueShopping,
+  orderDetails
 }) => {
 
   return (
@@ -21,11 +21,6 @@ export const OrderSummary = ({
             <dl className="flex items-center justify-between gap-4">
               <dt className="text-base font-normal text-textSecondary">Original price</dt>
               <dd className="text-base font-medium text-textPrimary">₹{subtotal.toLocaleString()}</dd>
-            </dl>
-
-            <dl className="flex items-center justify-between gap-4">
-              <dt className="text-base font-normal text-textSecondary">Savings</dt>
-              <dd className="text-base font-medium text-success">-₹{savings.toLocaleString()}</dd>
             </dl>
 
             <dl className="flex items-center justify-between gap-4">
@@ -51,16 +46,17 @@ export const OrderSummary = ({
           </dl>
         </div>
 
-        <button 
-          onClick={onCheckout}
-          className="flex w-full items-center justify-center rounded-lg bg-primary px-5 py-2.5 text-sm font-medium text-white hover:bg-primary/90 focus:outline-none focus:ring-4 focus:ring-primary/30 transition-skin"
-        >
-          Proceed to Checkout
-        </button>
+        <Link to={"/order"} state={{ orderDetails }}>
+          <button
+            className="flex w-full items-center justify-center rounded-lg bg-primary px-5 py-2.5 text-sm font-medium text-white hover:bg-primary/90 focus:outline-none focus:ring-4 focus:ring-primary/30 transition-skin"
+          >
+            Proceed to Checkout
+          </button>
+        </Link>
 
         <div className="flex items-center justify-center gap-2">
           <span className="text-sm font-normal text-textSecondary">or</span>
-          <button 
+          <button
             onClick={onContinueShopping}
             className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:text-primary/80 transition-skin"
           >
