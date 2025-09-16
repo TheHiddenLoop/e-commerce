@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import InputField from "../components/UI/InputField";
 import { User, Mail, Phone, MapPin, Home, Plus } from "lucide-react";
 import { useLocation } from "react-router-dom";
+import { axiosInstance } from "../libs/axios";
 
 export default function CheckoutPage() {
   const [addressOption, setAddressOption] = useState("saved");
@@ -18,9 +19,27 @@ export default function CheckoutPage() {
     phone: "+91-1234567890",
   };
 
-  console.log(orderDetails);
+  // console.log(orderDetails);
   const deliveryCharge=45;
   const total=orderDetails.total+deliveryCharge;
+
+  const handleCheckout = async () => {
+    console.log(orderDetails);
+    
+  try {
+    const { data } = await axiosInstance.post("/order/create-checkout-session", {
+      orderItems: orderDetails.products,
+      addressOption,
+    });
+
+    window.location.href = data.url;
+  } catch (error) {
+    console.error("Error during checkout:", error.response?.data || error.message);
+    alert("Something went wrong while creating checkout session.");
+  }
+};
+
+
 
   return (
     <div className="max-w-6xl mx-auto px-6 py-12 font-poppins">
@@ -123,7 +142,7 @@ export default function CheckoutPage() {
               <span>₹{total}</span>
             </div>
 
-            <button className="mt-6 w-full bg-primary hover:bg-accent text-white py-3 rounded-lg font-semibold transition-skin">
+            <button onClick={handleCheckout} className="mt-6 w-full bg-primary hover:bg-accent text-white py-3 rounded-lg font-semibold transition-skin">
               Proceed To Payment
             </button>
           </div>
