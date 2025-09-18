@@ -9,6 +9,7 @@ import passport from "./config/passport.js";
 import productRouter from "./routes/productRoutes.js";
 import cartRouter from "./routes/cartRoutes.js";
 import orderRouter from "./routes/orderRoutes.js";
+import { stripeWebhook } from "./controllers/webhookController.js";
 
 dotenv.config();
 connectDB();
@@ -20,6 +21,12 @@ app.use(cors({
   origin: process.env.FRONTEND_URL,
   credentials: true
 }));
+
+app.post(
+  "/api/v1/order/webhook",
+  express.raw({ type: "application/json" }),
+  stripeWebhook
+);
 app.use(express.json());
 
 app.use(passport.initialize());

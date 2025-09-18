@@ -1,7 +1,18 @@
 import { useInView } from "react-intersection-observer";
 import { Link } from "react-router-dom";
+import { ShoppingCart, ShoppingBag } from "lucide-react";
 
-export function ProductCard({ id, name, description, image, price,onclick, buy, cart, onbuy }) {
+export function ProductCard({
+  id,
+  name,
+  description,
+  image,
+  price,
+  onclick,
+  buy,
+  cart,
+  onbuy,
+}) {
   const { ref, inView } = useInView({
     triggerOnce: true,
     threshold: 0.2,
@@ -32,14 +43,24 @@ export function ProductCard({ id, name, description, image, price,onclick, buy, 
         <div className="flex items-center justify-between mt-2">
           <p className="text-primary font-bold text-lg">{price}</p>
           <div className="flex gap-2">
-            {buy && <Link to={`/product-details/${id}`}>
-              <button onClick={onbuy} className="btn-gradient text-white px-4 py-2 rounded-xl font-semibold text-sm shadow-md hover:shadow-lg transition">
-             Buy
-          </button>
-            </Link>}
-          {cart && <button onClick={onclick} className="btn-gradient text-white px-4 py-2 rounded-xl font-semibold text-sm shadow-md hover:shadow-lg transition">
-            Cart
-          </button>}
+            {buy && (
+              <Link to={`/product-details/${id}`}>
+                <button
+                  onClick={onbuy}
+                  className="btn-gradient text-white p-2 rounded-xl shadow-md hover:shadow-lg transition flex items-center justify-center"
+                >
+                  <ShoppingBag size={18} />
+                </button>
+              </Link>
+            )}
+            {cart && (
+              <button
+                onClick={onclick}
+                className="btn-gradient text-white p-2 rounded-xl shadow-md hover:shadow-lg transition flex items-center justify-center"
+              >
+                <ShoppingCart size={18} />
+              </button>
+            )}
           </div>
         </div>
       </div>

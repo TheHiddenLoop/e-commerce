@@ -86,7 +86,7 @@ export const Cart = () => {
   const tax = Math.round(subtotal * 0.08);
   const total = subtotal + shipping + tax;
 
-  // ✅ build order object here
+  
   const order = {
     subtotal,
     savings,
@@ -97,19 +97,17 @@ export const Cart = () => {
     products: cartItems.map((item) => ({
       id: item.id,
       name: item.name,
-      brand: item.brand,
-      category: item.category,
       price: item.price,
-      originalPrice: item.originalPrice,
+      image:item.image,
       quantity: item.quantity,
-      stock: item.stock,
       selectedColor: item.selectedColor || null,
       selectedSize: item.selectedSize || null,
-      availableColors: item.colors,
-      availableSizes: item.sizes,
       lineTotal: item.price * item.quantity,
     })),
   };
+
+    console.log(order);
+
 
 
   const handleContinueShopping = () => {

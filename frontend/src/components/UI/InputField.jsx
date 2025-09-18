@@ -3,7 +3,10 @@ import React from "react";
 export default function InputField({ 
   type = "text", 
   placeholder, 
-  icon: Icon 
+  icon: Icon ,
+  onChange,
+  value,
+  name
 }) {
   return (
     <div className="mb-4">
@@ -14,6 +17,9 @@ export default function InputField({
         <input
           type={type}
           placeholder={placeholder}
+          value={value}
+          name={name}
+          onChange={onChange}
           className="w-full pl-10 pr-3 py-3 rounded-lg bg-bgPrimary border border-border 
                      text-textPrimary focus:border-primary focus:ring-1 
                      focus:ring-[var(--bg-glass)] outline-none transition-skin 

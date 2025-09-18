@@ -1,70 +1,86 @@
 import React, { useState } from "react";
 import InputField from "../components/UI/InputField";
-import { User, Mail, Phone, MapPin, Home, Plus } from "lucide-react";
+import { Phone, MapPin, Home, Plus, MapPinOff } from "lucide-react";
 import { useLocation } from "react-router-dom";
 import { axiosInstance } from "../libs/axios";
+import { useSelector } from "react-redux";
+import { selectAuth } from "../features/authentication/authSelectors";
+import toast from "react-hot-toast";
 
 export default function CheckoutPage() {
-  const [addressOption, setAddressOption] = useState("saved");
-  const location = useLocation();
 
+  const authUser = useSelector(selectAuth);
+
+  const [addressOption, setAddressOption] = useState("saved");
+  const [newAddress, setNewAddress] = useState({
+    address: "",
+    city: "",
+    state: "",
+    postalCode: "",
+    country: "",
+    phone: "",
+  });
+
+  const location = useLocation();
   const { orderDetails } = location.state || {};
+
   const savedAddress = {
-    name: "Angech Chauhan",
-    street: "123 MG Road",
-    city: "Indore",
-    state: "MP",
-    zip: "452001",
-    country: "India",
-    phone: "+91-1234567890",
+    name: authUser.name,
+    address: authUser.address.address,
+    city: authUser.address.city,
+    state: authUser.address.state,
+    postalCode: authUser.address.postalCode,
+    country: authUser.address.country,
+    phone: authUser.address.phone,
   };
 
-  // console.log(orderDetails);
-  const deliveryCharge=45;
-  const total=orderDetails.total+deliveryCharge;
+  console.log(orderDetails);
+  
+
+  const deliveryCharge = 45;
+  const total = orderDetails.total + deliveryCharge;
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setNewAddress((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const hasSavedAddress = Object.values(authUser.address).every(val => val !== "");
 
   const handleCheckout = async () => {
-    console.log(orderDetails);
-    
-  try {
-    const { data } = await axiosInstance.post("/order/create-checkout-session", {
-      orderItems: orderDetails.products,
-      addressOption,
-    });
-
-    window.location.href = data.url;
-  } catch (error) {
-    console.error("Error during checkout:", error.response?.data || error.message);
-    alert("Something went wrong while creating checkout session.");
-  }
-};
 
 
+    try {
+      const { data } = await axiosInstance.post("/order/create-checkout-session", {
+        orderItems: orderDetails.products,
+        addressOption,
+        shippingAddress: addressOption === "saved" ? savedAddress : newAddress,
+      });
+
+      window.location.href = data.url;
+    } catch (error) {
+      console.error("Error during checkout:", error.response?.data || error.message);
+      toast.error(error.response?.data.error)
+    }
+  };
 
   return (
     <div className="max-w-6xl mx-auto px-6 py-12 font-poppins">
       <div className="grid md:grid-cols-2 gap-10">
         <div>
-          <h2 className="text-2xl font-bold text-textPrimary mb-6">
-            Delivery Information
-          </h2>
+          <h2 className="text-2xl font-bold text-textPrimary mb-6">Delivery Information</h2>
 
           <div className="mb-6 grid grid-cols-2 gap-4">
             <button
               type="button"
               onClick={() => setAddressOption("saved")}
               className={`flex items-center gap-3 p-2 md:p-4 border rounded-lg transition-all shadow-sm 
-                ${
-                  addressOption === "saved"
-                    ? "border-primary bg-primary/10 text-primary"
-                    : "border-border bg-bgPrimary text-textSecondary hover:border-primary"
+                ${addressOption === "saved"
+                  ? "border-primary bg-primary/10 text-primary"
+                  : "border-border bg-bgPrimary text-textSecondary hover:border-primary"
                 }`}
             >
-              <Home
-                className={`w-5 h-5 ${
-                  addressOption === "saved" ? "text-primary" : "text-gray-500"
-                }`}
-              />
+              <Home className={`w-5 h-5 ${addressOption === "saved" ? "text-primary" : "text-gray-500"}`} />
               <span className="font-medium">Saved Address</span>
             </button>
 
@@ -72,62 +88,94 @@ export default function CheckoutPage() {
               type="button"
               onClick={() => setAddressOption("new")}
               className={`flex items-center gap-3 p-4 border rounded-lg transition-all shadow-sm 
-                ${
-                  addressOption === "new"
-                    ? "border-primary bg-primary/10 text-primary"
-                    : "border-border bg-bgPrimary text-textSecondary hover:border-primary"
+                ${addressOption === "new"
+                  ? "border-primary bg-primary/10 text-primary"
+                  : "border-border bg-bgPrimary text-textSecondary hover:border-primary"
                 }`}
             >
-              <Plus
-                className={`w-5 h-5 ${
-                  addressOption === "new" ? "text-primary" : "text-gray-500"
-                }`}
-              />
+              <Plus className={`w-5 h-5 ${addressOption === "new" ? "text-primary" : "text-gray-500"}`} />
               <span className="font-medium">New Address</span>
             </button>
           </div>
 
-          {addressOption === "saved" && (
+          {hasSavedAddress && addressOption === "saved" ? (
             <div className="bg-bgPrimary border border-border rounded-lg p-5 shadow-sm space-y-2 text-textSecondary">
               <p className="font-medium text-textPrimary">{savedAddress.name}</p>
-              <p>{savedAddress.street}</p>
+              <p>{savedAddress.address}</p>
               <p>
-                {savedAddress.city}, {savedAddress.state} - {savedAddress.zip}
+                {savedAddress.city}, {savedAddress.state} - {savedAddress.postalCode}
               </p>
               <p>{savedAddress.country}</p>
               <p>{savedAddress.phone}</p>
             </div>
+          ) : (addressOption === "saved" && <div className="flex items-center gap-4 bg-bgPrimary border border-border rounded-xl p-5 shadow-skin hover:shadow-skin transition-skin duration-200">
+            <div className="flex-shrink-0 w-8 h-8 bg-bgPrimary border border-border rounded-full flex items-center justify-center">
+              <MapPin className="w-4 h-4 text-accent" />
+            </div>
+            <div className="flex flex-col">
+              <span className="text-sm font-semibold text-textPrimary font-poppins">No Address</span>
+              <span className="text-xs text-textSecondary font-poppins">Location information not provided</span>
+            </div>
+          </div>
           )}
 
           {addressOption === "new" && (
             <form className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <InputField placeholder="First Name" icon={User} />
-                <InputField placeholder="Last Name" icon={User} />
-              </div>
-
-              <InputField type="email" placeholder="Email" icon={Mail} />
-              <InputField placeholder="Street Address" icon={MapPin} />
-
-              <div className="grid grid-cols-2 gap-4">
-                <InputField placeholder="City" icon={MapPin} />
-                <InputField placeholder="State" icon={MapPin} />
-              </div>
+              <InputField
+                row
+                placeholder="Street Address"
+                icon={MapPin}
+                name="address"
+                value={newAddress.address}
+                onChange={handleChange}
+              />
 
               <div className="grid grid-cols-2 gap-4">
-                <InputField placeholder="Zip Code" />
-                <InputField placeholder="Country" />
+                <InputField
+                  placeholder="City"
+                  icon={MapPin}
+                  name="city"
+                  value={newAddress.city}
+                  onChange={handleChange}
+                />
+                <InputField
+                  placeholder="State"
+                  icon={MapPin}
+                  name="state"
+                  value={newAddress.state}
+                  onChange={handleChange}
+                />
               </div>
 
-              <InputField type="tel" placeholder="Phone" icon={Phone} />
+              <div className="grid grid-cols-2 gap-4">
+                <InputField
+                  placeholder="Postal Code"
+                  name="postalCode"
+                  value={newAddress.postalCode}
+                  onChange={handleChange}
+                />
+                <InputField
+                  placeholder="Country"
+                  name="country"
+                  value={newAddress.country}
+                  onChange={handleChange}
+                />
+              </div>
+
+              <InputField
+                type="tel"
+                placeholder="Phone"
+                icon={Phone}
+                name="phone"
+                value={newAddress.phone}
+                onChange={handleChange}
+              />
             </form>
           )}
         </div>
 
         <div>
-          <h2 className="text-2xl font-bold text-textPrimary mb-6">
-            Payable Amount
-          </h2>
+          <h2 className="text-2xl font-bold text-textPrimary mb-6">Payable Amount</h2>
           <div className="bg-bgPrimary border border-border rounded-lg p-6 shadow-skin space-y-3">
             <div className="flex justify-between text-textSecondary">
               <span>Subtotal</span>
@@ -142,7 +190,10 @@ export default function CheckoutPage() {
               <span>₹{total}</span>
             </div>
 
-            <button onClick={handleCheckout} className="mt-6 w-full bg-primary hover:bg-accent text-white py-3 rounded-lg font-semibold transition-skin">
+            <button
+              onClick={handleCheckout}
+              className="mt-6 w-full bg-primary hover:bg-accent text-white py-3 rounded-lg font-semibold transition-skin"
+            >
               Proceed To Payment
             </button>
           </div>

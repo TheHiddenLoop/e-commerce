@@ -303,3 +303,125 @@ export const dummyCartData = [
     originalPrice: 749
   }
 ];
+
+
+
+export const orders = [
+  {
+    orderId: "ORD-1001",
+    date: "2025-03-04",
+    status: "Placed",
+    paymentMethod: "Online",
+    totalAmount: 65656,
+    products: [
+      {
+        id: "P-101",
+        name: "Wireless Headphones",
+        category: "Electronics",
+        image:
+          "https://images.unsplash.com/photo-1585386959984-a4155224a1e1?w=500",
+        quantity: 2,
+        price: 2999,
+      },
+      {
+        id: "P-102",
+        name: "Smart Watch",
+        category: "Wearables",
+        image:
+          "https://images.unsplash.com/photo-1511739001486-6bfe10ce785f?w=500",
+        quantity: 1,
+        price: 4999,
+      },
+    ],
+  },
+  {
+    orderId: "ORD-1002",
+    date: "2025-02-20",
+    status: "Delivered",
+    paymentMethod: "COD",
+    totalAmount: 12300,
+    products: [
+      {
+        id: "P-103",
+        name: "Casual Sneakers",
+        category: "Footwear",
+        image:
+          "https://images.unsplash.com/photo-1528701800489-20be3c1c3c48?w=500",
+        quantity: 1,
+        price: 3200,
+      },
+      {
+        id: "P-104",
+        name: "Denim Jacket",
+        category: "Apparel",
+        image:
+          "https://images.unsplash.com/photo-1618354691323-f9c9e1e4c34a?w=500",
+        quantity: 2,
+        price: 4500,
+      },
+    ],
+  },
+  {
+    orderId: "ORD-1003",
+    date: "2025-02-10",
+    status: "Shipped",
+    paymentMethod: "Online",
+    totalAmount: 899,
+    products: [
+      {
+        id: "P-105",
+        name: "Coffee Mug",
+        category: "Kitchen",
+        image:
+          "https://images.unsplash.com/photo-1584362917165-526a968579e8?w=500",
+        quantity: 3,
+        price: 299,
+      },
+    ],
+  },
+  {
+    orderId: "ORD-1004",
+    date: "2025-01-28",
+    status: "Cancelled",
+    paymentMethod: "Online",
+    totalAmount: 5600,
+    products: [
+      {
+        id: "P-106",
+        name: "Bluetooth Speaker",
+        category: "Electronics",
+        image:
+          "https://images.unsplash.com/photo-1583225127872-90ffb9b9c9dc?w=500",
+        quantity: 1,
+        price: 5600,
+      },
+    ],
+  },
+  {
+    orderId: "ORD-1005",
+    date: "2025-01-15",
+    status: "Returned",
+    paymentMethod: "Online",
+    totalAmount: 7500,
+    products: [
+      {
+        id: "P-107",
+        name: "Gaming Keyboard",
+        category: "Electronics",
+        image:
+          "https://images.unsplash.com/photo-1610701590878-6cfb7e1a9f40?w=500",
+        quantity: 1,
+        price: 3500,
+      },
+      {
+        id: "P-108",
+        name: "Gaming Mouse",
+        category: "Electronics",
+        image:
+          "https://images.unsplash.com/photo-1610701643923-6ec8abca9015?w=500",
+        quantity: 1,
+        price: 4000,
+      },
+    ],
+  },
+];

@@ -1,22 +1,28 @@
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Star } from "lucide-react";
+import { Link } from "react-router-dom";
 
-export function ProductDetailCard({ images, name, originalPrice, discountPercent, description, colors, onAddCart }) {
+export function ProductDetailCard({ images, name, sizes, originalPrice, discountPercent, description, colors, onAddCart, onBuy, orderDetails }) {
   const discountedPrice = originalPrice - (originalPrice * discountPercent) / 100;
 
   const [selectedColor, setSelectedColor] = useState(null);
+  const [selectedSize, setSelectedSize] = useState(null);
   const [selectedImage, setSelectedImage] = useState(null);
   const [quantity, setQuantity] = useState(1);
 
   useEffect(() => {
     setSelectedColor(null);
-    setSelectedImage(null); 
+    setSelectedImage(null);
+    setSelectedSize(null);
     if (images && images.length > 0) {
       setSelectedImage(images[0]);
     }
     if (colors && colors.length > 0) {
       setSelectedColor(colors[0]);
+    }
+    if (sizes && sizes.length > 0) {
+      setSelectedColor(sizes[0]);
     }
   }, [images]);
 
@@ -79,9 +85,8 @@ export function ProductDetailCard({ images, name, originalPrice, discountPercent
               <span
                 key={i}
                 onClick={() => setSelectedColor(color)}
-                className={`h-6 w-6 sm:h-8 sm:w-8 flex items-center justify-center rounded-full border cursor-pointer transition ${
-                  selectedColor === color ? "ring-2 ring-primary" : "border-border"
-                }`}
+                className={`h-6 w-6 sm:h-8 sm:w-8 flex items-center justify-center rounded-full border cursor-pointer transition ${selectedColor === color ? "ring-2 ring-primary" : "border-border"
+                  }`}
                 style={{ backgroundColor: color.toLowerCase() }}
               >
                 {selectedColor === color && (
@@ -90,6 +95,21 @@ export function ProductDetailCard({ images, name, originalPrice, discountPercent
               </span>
             ))}
           </div>
+
+          <div className="flex items-center gap-3 mb-4">
+            {sizes.map((size, i) => (
+              <span
+                key={i}
+                onClick={() => setSelectedSize(size)}
+                className={`h-8 w-8 sm:h-10 sm:w-10 flex items-center justify-center rounded-full border cursor-pointer transition text-sm sm:text-base
+                  ${selectedSize === size ? "bg-primary text-white ring-2 ring-primary" : "border-border text-gray-700"}
+                `}
+              >
+                {size}
+              </span>
+            ))}
+          </div>
+
 
           <div className="flex items-center gap-3 mb-4">
             <span className="font-medium text-sm sm:text-base">Quantity:</span>
@@ -120,9 +140,8 @@ export function ProductDetailCard({ images, name, originalPrice, discountPercent
                 alt={`Thumbnail ${i}`}
                 whileHover={{ scale: 1.05 }}
                 onClick={() => setSelectedImage(img)}
-                className={`h-14 w-14 sm:h-16 sm:w-16 md:h-20 md:w-20 object-cover cursor-pointer rounded border transition ${
-                  selectedImage === img ? "ring-2 ring-primary" : "border-border"
-                }`}
+                className={`h-14 w-14 sm:h-16 sm:w-16 md:h-20 md:w-20 object-cover cursor-pointer rounded border transition ${selectedImage === img ? "ring-2 ring-primary" : "border-border"
+                  }`}
               />
             ))}
           </div>
@@ -130,17 +149,20 @@ export function ProductDetailCard({ images, name, originalPrice, discountPercent
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
             <motion.button
               whileTap={{ scale: 0.95 }}
-              onClick={()=>onAddCart(quantity)}
+              onClick={() => onAddCart(quantity)}
               className="w-full sm:w-auto px-4 sm:px-6 py-2 sm:py-3 bg-primary text-white rounded-lg sm:rounded-xl shadow hover:opacity-90"
             >
               Add to Cart
             </motion.button>
-            <motion.button
-              whileTap={{ scale: 0.95 }}
-              className="w-full sm:w-auto px-4 sm:px-6 py-2 sm:py-3 bg-accent text-white rounded-lg sm:rounded-xl shadow hover:opacity-90"
-            >
-              Buy Now
-            </motion.button>
+            <Link to={"/order"} state={{ orderDetails }}>
+              <motion.button
+                whileTap={{ scale: 0.95 }}
+                onClick={() => onBuy({ selectedColor, quantity, selectedSize })}
+                className="w-full sm:w-auto px-4 sm:px-6 py-2 sm:py-3 bg-accent text-white rounded-lg sm:rounded-xl shadow hover:opacity-90"
+              >
+                Buy Now
+              </motion.button>
+            </Link>
           </div>
         </div>
       </div>

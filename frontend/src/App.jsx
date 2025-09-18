@@ -17,8 +17,10 @@ import Layout from "./components/UI/Layout";
 import {Cart} from "./pages/Cart"
 import ShopPage from "./pages/ShopPage";
 import { ProductDetails } from "./pages/ProductDetails";
-import Order from "./components/Order";
+// import Order from "./components/Order";
 import CheckoutPage from "./pages/CheckoutPage";
+import OrderHistory from "./pages/OrderHistory";
+
 
 export default function Page() {
   const dispatch = useDispatch();
@@ -68,6 +70,11 @@ export default function Page() {
         <Route
           path="/order"
           element={auth ? <CheckoutPage /> : <Navigate to="/login" replace />}
+        />
+
+        <Route
+          path="/order/history"
+          element={auth ? <OrderHistory /> : <Navigate to="/login" replace />}
         />
 
         <Route

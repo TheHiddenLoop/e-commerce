@@ -50,6 +50,14 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: null, 
     },
+    address: {
+      address: { type: String, default:""},
+      city: { type: String, default:""},
+      state: { type: String, default:""},
+      country: { type: String, default:""},
+      postalCode: { type: String, default:""},
+      phone: { type: String, default:""},
+    },
     profilePic: {
       type: String,
       default: null,
