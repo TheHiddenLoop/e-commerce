@@ -10,16 +10,20 @@ import { selectAuth, authUserCheck, selectAuthStatus, selectAuthStatusCheck } fr
 import { checkAuth } from "./features/authentication/authSlice";
 import { useEffect } from "react";
 import { Loader } from "lucide-react";
-import {Toaster} from "react-hot-toast"
-import {AuthNotifier} from "./components/UI/AuthNotifier"
+import { Toaster } from "react-hot-toast"
+import { AuthNotifier } from "./components/UI/AuthNotifier"
 import { Navbar } from "./components/Navbar";
 import Layout from "./components/UI/Layout";
-import {Cart} from "./pages/Cart"
+import { Cart } from "./pages/Cart"
 import ShopPage from "./pages/ShopPage";
 import { ProductDetails } from "./pages/ProductDetails";
-// import Order from "./components/Order";
+import Orders from "./components/admin/Orders.jsx"
 import CheckoutPage from "./pages/CheckoutPage";
 import OrderHistory from "./pages/OrderHistory";
+import AdminLayout from "./components/layout/AdminLayout";
+import Dashboard from "./components/admin/Dashboard.jsx"
+import AllProductsList from "./components/admin/AllProductsList.jsx";
+import AddProducts from "./components/admin/AddProducts.jsx";
 
 
 export default function Page() {
@@ -32,7 +36,7 @@ export default function Page() {
   useEffect(() => {
     dispatch(checkAuth());
   }, [dispatch]);
-  
+
   if (statusCheck === "loading" && !auth) {
     return (
       <div className="flex items-center justify-center h-screen">
@@ -40,7 +44,7 @@ export default function Page() {
       </div>
     );
   }
-  
+
   return (
     <main className="min-h-screen bg-bgSecondary">
       <Toaster />
@@ -56,6 +60,15 @@ export default function Page() {
           path="/cart"
           element={auth ? <Cart /> : <Navigate to="/login" replace />}
         />
+        <Route
+          path="/admin"
+          element={authUser ? <AdminLayout /> : <Navigate to="/login" />}
+        >
+          <Route path="dashboard" element={<Dashboard />} />
+          <Route path="add/products" element={<AddProducts />} />
+          <Route path="product/list" element={<AllProductsList />} />
+          <Route path="all-orders" element={<Orders />}/>
+        </Route>
 
         <Route
           path="/products"
