@@ -106,9 +106,6 @@ export const Cart = () => {
     })),
   };
 
-    console.log(order);
-
-
 
   const handleContinueShopping = () => {
     console.log("Continue shopping");

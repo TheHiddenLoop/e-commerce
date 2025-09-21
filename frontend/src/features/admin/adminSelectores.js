@@ -1,4 +1,6 @@
 export const selectAllProducts = (state) => state.adminProduct.sellingProducts;
+export const selectOrders = (state) => state.adminProduct.orderedItems;
+
 
 export const selectProductById = (state, id) =>
   state.adminProduct.sellingProducts.find((product) => product._id === id);

@@ -1,39 +1,56 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { allOrderApi } from "./orderApi";
-import toast  from "react-hot-toast";
-
+import { allOrderApi, createCheckoutSessionApi } from "./orderApi";
+import toast from "react-hot-toast";
 
 export const allOrders = createAsyncThunk(
-  "order/allOrder",
+  "order/allOrders",
   async (_, thunkAPI) => {
     try {
-      const data = await allOrderApi();  
-      return data.orders;                  
+      const data = await allOrderApi();
+      return data.orders;
     } catch (err) {
-      const message = err.response?.data?.message || err.message;
-      toast.error(message);
-      return thunkAPI.rejectWithValue(message);
+      toast.error(err.message);
+      return thunkAPI.rejectWithValue(err.message);
     }
   }
 );
 
+export const createCheckoutSession = createAsyncThunk(
+  "order/createCheckoutSession",
+  async ({ orderDetails, addressOption, savedAddress, newAddress }, thunkAPI) => {
+    try {
+      const data = await createCheckoutSessionApi(
+        orderDetails,
+        addressOption,
+        savedAddress,
+        newAddress
+      );
+      window.location.href = data.url;
+      return data;
+    } catch (err) {
+      toast.error(err.message);
+      return thunkAPI.rejectWithValue(err.message);
+    }
+  }
+);
 
 const orderSlice = createSlice({
   name: "order",
   initialState: {
-    orders: [],      
-    status: "idle", 
+    orders: [],
+    status: "idle",
+    checkoutStatus: "idle",
     error: null,
   },
   reducers: {
     clearError: (state) => {
       state.error = null;
       if (state.status === "failed") state.status = "idle";
+      if (state.checkoutStatus === "failed") state.checkoutStatus = "idle";
     },
   },
   extraReducers: (builder) => {
     builder
-      // all orders
       .addCase(allOrders.pending, (state) => {
         state.status = "loading";
         state.error = null;
@@ -46,7 +63,17 @@ const orderSlice = createSlice({
         state.status = "failed";
         state.error = action.payload;
       })
-      
+      .addCase(createCheckoutSession.pending, (state) => {
+        state.checkoutStatus = "loading";
+        state.error = null;
+      })
+      .addCase(createCheckoutSession.fulfilled, (state) => {
+        state.checkoutStatus = "succeeded";
+      })
+      .addCase(createCheckoutSession.rejected, (state, action) => {
+        state.checkoutStatus = "failed";
+        state.error = action.payload;
+      });
   },
 });
 

@@ -92,7 +92,7 @@ export const createCheckoutSession = async (req, res) => {
         orderItems: JSON.stringify(orderItems),
         shippingAddress: JSON.stringify(finalAddress),
         totalPrice: finalTotal.toString(),
-        taxPrice:tax.toString(),
+        taxPrice: tax.toString(),
       },
       success_url: `${process.env.FRONTEND_URL}/order/history?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${process.env.FRONTEND_URL}/cart`,
@@ -110,7 +110,8 @@ export const getAllOrders = async (req, res) => {
     const userId = req.user._id;
 
     const allOrders = await Order.find({ user: userId })
-      .populate("orderItems.product", "category").sort({ createdAt: -1 });
+      .populate("orderItems.product", "category")
+      .sort({ createdAt: -1 });
 
     if (!allOrders || allOrders.length === 0) {
       return res
@@ -132,7 +133,7 @@ export const getAllOrders = async (req, res) => {
         quantity: item.quantity,
         color: item.color,
         size: item.size,
-        category: item.product.category, 
+        category: item.product.category,
       })),
     }));
 
@@ -147,5 +148,61 @@ export const getAllOrders = async (req, res) => {
   }
 };
 
+export const getOrderedItems = async (req, res) => {
+  try {
+    const userId = req.user._id;
 
+    const orders = await Order.find({ "orderItems.seller": userId })
+      .populate("user", "name email")
+      .populate("orderItems.product", "name image");
 
+    const sellerBasedItems = orders.map((order) => {
+      const sellerItems = order.orderItems.filter((item) =>
+        item.seller.equals(userId)
+      );
+
+      return {
+        orderId: order._id,
+        buyer: order.user,
+        shippingAddress: order.shippingAddress,
+        paymentMethod: order.paymentMethod,
+        paymentStatus: order.isPaid ? "Paid" : "Unpaid",
+        totalPrice: order.totalPrice,
+        taxPrice: order.taxPrice,
+        shippingPrice: order.shippingPrice,
+        deliveryStatus: order.deliveryStatus,
+        createdAt: order.createdAt,
+        items: sellerItems,
+      };
+    });
+
+    res.status(200).json({ success: true, sellerBasedItems });
+  } catch (error) {
+    console.error("Error in getOrderedItems:", error.message);
+    res.status(500).json({ success: false, message: "Internal Server Error" });
+  }
+};
+
+export const updateStatus = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { deliveryStatus } = req.body;
+
+    const order = await Order.findOne({ _id: id });
+    if (!order) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Intems not found" });
+    }
+
+    order.deliveryStatus =
+      deliveryStatus.charAt(0).toUpperCase() +
+      deliveryStatus.slice(1).toLowerCase();
+    await order.save();
+
+    res.status(200).json({ success: true, message: "Status updated." });
+  } catch (error) {
+    console.error("Error in updateStatus:", error.message);
+    res.status(500).json({ success: false, message: "Internal Server Error" });
+  }
+};

@@ -1,15 +1,20 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import InputField from "../components/UI/InputField";
-import { Phone, MapPin, Home, Plus, MapPinOff } from "lucide-react";
+import { Phone, MapPin, Home, Plus, Loader2 } from "lucide-react";
 import { useLocation } from "react-router-dom";
-import { axiosInstance } from "../libs/axios";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { selectAuth } from "../features/authentication/authSelectors";
 import toast from "react-hot-toast";
+import { selectCheckoutStatus } from "../features/order/orderSelectors";
+import { createCheckoutSession } from "../features/order/OrderSlice";
+
 
 export default function CheckoutPage() {
 
   const authUser = useSelector(selectAuth);
+  const loading = useSelector(selectCheckoutStatus);
+  const dispatch = useDispatch();
+
 
   const [addressOption, setAddressOption] = useState("saved");
   const [newAddress, setNewAddress] = useState({
@@ -34,8 +39,6 @@ export default function CheckoutPage() {
     phone: authUser.address.phone,
   };
 
-  console.log(orderDetails);
-  
 
   const deliveryCharge = 45;
   const total = orderDetails.total + deliveryCharge;
@@ -47,21 +50,8 @@ export default function CheckoutPage() {
 
   const hasSavedAddress = Object.values(authUser.address).every(val => val !== "");
 
-  const handleCheckout = async () => {
-
-
-    try {
-      const { data } = await axiosInstance.post("/order/create-checkout-session", {
-        orderItems: orderDetails.products,
-        addressOption,
-        shippingAddress: addressOption === "saved" ? savedAddress : newAddress,
-      });
-
-      window.location.href = data.url;
-    } catch (error) {
-      console.error("Error during checkout:", error.response?.data || error.message);
-      toast.error(error.response?.data.error)
-    }
+  const handleCheckout = () => {
+    dispatch(createCheckoutSession({ orderDetails, addressOption, savedAddress, newAddress }));
   };
 
   return (
@@ -192,10 +182,23 @@ export default function CheckoutPage() {
 
             <button
               onClick={handleCheckout}
-              className="mt-6 w-full bg-primary hover:bg-accent text-white py-3 rounded-lg font-semibold transition-skin"
+              disabled={loading === "loading"}
+              className={`mt-6 w-full py-3 px-4 rounded-lg font-semibold flex items-center justify-center gap-2
+              ${loading === "loading"
+                            ? "bg-primary cursor-not-allowed"
+                            : "bg-primary hover:bg-bgSecondary"}
+              text-white transition`}
             >
-              Proceed To Payment
+              {loading === "loading" ? (
+                <div className="flex items-center gap-2">
+                  <Loader2 className="h-5 w-5 animate-spin" />
+                  <span>Processing...</span>
+                </div>
+              ) : (
+                "Proceed To Payment"
+              )}
             </button>
+
           </div>
         </div>
       </div>

@@ -5,16 +5,19 @@ import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { selectCartCount } from "../features/cart/cartSelectors";
 import logo from "../assets/logo2.png"
+import { selectAuth } from "../features/authentication/authSelectors";
+import userLogo from "../assets/user.png"
 
 export function Navbar({ onClick }) {
   const [isScrolled, setIsScrolled] = useState(false);
   const navigate = useNavigate();
+  const user=useSelector(selectAuth);
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 50);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, []);  
 
   const scrollToSection = (sectionId) => {
     navigate("/");
@@ -101,7 +104,7 @@ export function Navbar({ onClick }) {
 
             <div className="flex items-center border-primary border-[3px] w-10 h-10 rounded-full justify-center cursor-pointer overflow-hidden">
               <img
-                src="https://play-lh.googleusercontent.com/8OkZHhe9B39oVMR6K1nYJXfWn6lbmlb9yUEYJr3ULgF0ZiI5ZEmq_AIJncsvscoXCh0=w526-h296-rw"
+                src={user.profilePic ? user.profilePic : userLogo}
                 alt="Profile"
                 className="w-full h-full rounded-full transition-transform duration-300 hover:scale-105"
               />

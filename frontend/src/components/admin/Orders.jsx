@@ -1,48 +1,25 @@
-import { useState } from "react";
+import { useEffect } from "react";
 import AllOrdersCards from "../AllOrdersCards";
-import { CheckCircle, ShoppingCart } from "lucide-react"
-const orders = [
-  {
-    name: "Wireless Headphones",
-    user: "John Doe",
-    items: 2,
-    address: "221B Baker Street, London",
-    price: 2999,
-    status: "completed",
-  },
-  {
-    name: "Gaming Laptop",
-    user: "Jane Smith",
-    items: 1,
-    address: "742 Evergreen Terrace, Springfield",
-    price: 89999,
-    status: "pending",
-  },
-  {
-    name: "Smart Watch",
-    user: "Guest",
-    items: 3,
-    address: "No Address Provided",
-    price: 4999,
-    status: "cancelled",
-  },
-  {
-    name: "Bluetooth Speaker",
-    user: "Alex Carter",
-    items: 1,
-    address: "12 Hudson Yards, New York",
-    price: 1999,
-    status: "completed",
-  },
-];
+import { CheckCircle, ShoppingCart } from "lucide-react";
+import { useDispatch, useSelector } from "react-redux";
+import { orderesApi, updateStatus } from "../../features/admin/adminSlice";
+import { selectOrders } from "../../features/admin/adminSelectores";
 
 export default function Orders() {
-  const [status, setStatus] = useState("pending");
+  const dispatch = useDispatch();
+  const orders = useSelector(selectOrders);
 
-  const handleStatusChange = (e) => {
-    setStatus(e.target.value);
-    console.log(e.target.value); 
+  useEffect(() => {
+    dispatch(orderesApi()); 
+  }, [dispatch]);
+
+  const handleStatusChange = (orderId, newStatus) => {
+    console.log(orderId);
+    
+    dispatch(updateStatus({ id: orderId, status: newStatus }));
   };
+        console.log(orders);
+
 
   return (
     <div className="px-14 py-8">
@@ -59,17 +36,19 @@ export default function Orders() {
         </p>
       </div>
 
-       <div className="flex flex-col">
-        {orders.map((order, index) => (
+      
+
+      <div className="flex flex-col gap-4">
+        {orders.map((order) => (
           <AllOrdersCards
-            key={index}
-            names={order.name}
-            user={order.user}
-            items={order.items}
-            address={order.address}
-            price={order.price}
-            status={order.status}
-            onStatusChange={handleStatusChange}
+            key={order.orderId}
+            names={order.items.map((item) => item.name).join(", ") || ""}
+            user={order.buyer?.name || ""}
+            items={order.items.reduce((sum, curr) => sum + curr.quantity, 0)}
+            address={Object.values(order.shippingAddress).join(", ")}
+            price={order.totalPrice || 0}
+            status={order.deliveryStatus || ""}
+            onStatusChange={(newStatus) => handleStatusChange(order.orderId, newStatus)}
           />
         ))}
       </div>

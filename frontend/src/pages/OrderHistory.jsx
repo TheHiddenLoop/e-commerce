@@ -24,8 +24,6 @@ export default function OrderHistory() {
   useEffect(()=>{
     dispatch(allOrders());
   },[dispatch]);
-
-  console.log(orders);
   
 
   return (

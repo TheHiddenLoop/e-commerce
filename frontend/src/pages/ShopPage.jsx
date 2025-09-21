@@ -1,29 +1,45 @@
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect } from "react";
-import { selectProduct } from "../features/products/productSelectors";
+import { useEffect, useRef } from "react";
+import { selectProduct, selectProductStatus } from "../features/products/productSelectors";
 import { ProductCard } from "../components/ProductCard";
 import { getProducts } from "../features/products/productSlice";
 import { addCart } from "../features/cart/cartSlice";
+import LoadingBar from "react-top-loading-bar";
+import { Loader2 } from "lucide-react";
+
 
 export default function ShopPage() {
   const dispatch = useDispatch();
   const products = useSelector(selectProduct) || [];
+  const loading = useSelector(selectProductStatus);
 
   useEffect(() => {
     dispatch(getProducts());
   }, [dispatch]);
 
+  const loadingRef = useRef(null);
 
-  const handleAddCart=async (data) => {
-    const formData={ productId:data._id, price:data.price, size:data.size, color:data.color }    
+  useEffect(() => {
+    if (loading === "loading") {
+      loadingRef.current.continuousStart();
+    } else {
+      loadingRef.current.complete();
+    }
+  }, [loading]);
+
+
+  const handleAddCart = async (data) => {
+    const formData = { productId: data._id, price: data.price, size: data.size, color: data.color }
     dispatch(addCart(formData));
   }
 
 
   return (
     <div className="min-h-[calc(100vh-65px)] bg-Secondary text-textPrimary px-6 md:px-20 py-10">
+      <LoadingBar className="relative top-16" color="#8B5CF6" ref={loadingRef} shadow={true} />
+
       <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-        
+
         <div className="bg-Secondary p-4 md:col-span-1">
           <h1 className="text-xl font-semibold mb-4">Filter Area</h1>
           <p className="text-gray-400 text-sm">
@@ -54,7 +70,9 @@ export default function ShopPage() {
                 </div>
               ))
             ) : (
-              <p className="text-gray-400 text-lg mt-10">No products available</p>
+              <div className="flex w-full justify-center items-center">
+                <Loader2 className="animate-spin"/>
+              </div>
             )}
           </div>
         </div>

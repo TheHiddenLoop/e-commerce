@@ -49,7 +49,7 @@ export function ProductCard({
                   onClick={onbuy}
                   className="btn-gradient text-white p-2 rounded-xl shadow-md hover:shadow-lg transition flex items-center justify-center"
                 >
-                  <ShoppingBag size={18} />
+                  Buy
                 </button>
               </Link>
             )}
