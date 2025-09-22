@@ -7,8 +7,6 @@ import TestimonialSection from "../components/home/Testimonial";
 import { useDispatch, useSelector } from "react-redux";
 import { getProducts } from "../features/products/productSlice";
 import { useEffect } from "react";
-import { selectProduct } from "../features/products/productSelectors";
-import { allCart } from "../features/cart/cartSlice";
 
 export function Home() {
   const dispatch = useDispatch();

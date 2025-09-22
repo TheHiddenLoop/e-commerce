@@ -1,18 +1,9 @@
-import { axiosInstance } from "../../libs/axios";
+import { axiosInstance } from "../../../libs/axios";
 
-export const check= async () => {
+export const check = async () => {
   try {
-    const res = await axiosInstance.get("auth/me");
-    return res.data; 
-  } catch (err) {
-    console.log(err);
-  }
-}
-
-export const signup = async (formData) => {
-  try {
-    const res = await axiosInstance.post("auth/signup", formData);    
-    return res.data; 
+    const res = await axiosInstance.get("admin/me");
+    return res.data;
   } catch (err) {
     const message =
       err.response?.data?.message || err.message || "Signup failed";
@@ -22,9 +13,9 @@ export const signup = async (formData) => {
 
 export const verifyOtp = async (formData) => {
   try {
-    const res = await axiosInstance.post("auth/verify-otp", formData);
-    
-    return res.data; 
+    const res = await axiosInstance.post("admin/verify-otp", formData);
+
+    return res.data;
   } catch (err) {
     const message =
       err.response?.data?.message || err.message || "Signup failed";
@@ -34,8 +25,8 @@ export const verifyOtp = async (formData) => {
 
 export const signin = async (formData) => {
   try {
-    const res = await axiosInstance.post("/auth/login", formData);
-    return res.data; 
+    const res = await axiosInstance.post("/admin/login", formData);
+    return res.data;
   } catch (err) {
     const message =
       err.response?.data?.message || err.message || "Signin failed";
@@ -45,8 +36,8 @@ export const signin = async (formData) => {
 
 export const logout = async () => {
   try {
-    const res = await axiosInstance.post("/logout");    
-    return res.data; 
+    const res = await axiosInstance.post("/admin/logout");
+    return res.data;
   } catch (err) {
     const message =
       err.response?.data?.message || err.message || "Logout failed";

@@ -25,7 +25,6 @@ export const allCart = createAsyncThunk(
       return data.cart;                  
     } catch (err) {
       const message = err.response?.data?.message || err.message;
-      toast.error(message);
       return thunkAPI.rejectWithValue(message);
     }
   }

@@ -10,6 +10,7 @@ import productRouter from "./routes/productRoutes.js";
 import cartRouter from "./routes/cartRoutes.js";
 import orderRouter from "./routes/orderRoutes.js";
 import { stripeWebhook } from "./controllers/webhookController.js";
+import adminRouter from "./routes/adminAuthRoutes.js";
 
 dotenv.config();
 connectDB();
@@ -36,6 +37,8 @@ app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/product",  productRouter);
 app.use("/api/v1/cart",  cartRouter);
 app.use("/api/v1/order",  orderRouter);
+app.use("/api/v1/admin",  adminRouter);
+
 
 
 

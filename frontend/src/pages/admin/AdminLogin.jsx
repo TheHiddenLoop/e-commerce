@@ -1,32 +1,31 @@
 import { useState } from "react";
 import { Eye, EyeOff, Lock, Mail } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
-import { signinAuth } from "../features/authentication/authSlice";
-import {
-  selectAuthStatus,
-  selectAuthError,
-} from "../features/authentication/authSelectors";
+import { signinAuth } from "../../features/admin/adminAuth/adminAuthSlice";
 import { useDispatch, useSelector } from "react-redux";
-import { googleOAuth, facebook } from "../libs/oAuth";
+import { selectAdminAuthStatus } from "../../features/admin/adminAuth/adminAuthSelectors";
 
-export function Login() {
+export function AdminLogin() {
   const [isVisible, setIsVisible] = useState(false);
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
   const dispatch = useDispatch();
-  const status = useSelector(selectAuthStatus);
-  const error = useSelector(selectAuthError);
+  const status = useSelector(selectAdminAuthStatus);
+
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    dispatch(signinAuth(formData));
-    setTimeout(() => {
-      navigate("/");
-    }, 200);
+    try {
+      const result = await dispatch(signinAuth(formData)).unwrap();
+      navigate("/admin/verify");
+    } catch (error) {
+      console.error("Login failed:", error);
+    }
   };
+
 
   return (
     <div className=" min-h-[calc(100vh-65px)] bg-bgPrimary flex justify-center items-center p-4 transition-skin">
@@ -112,41 +111,6 @@ export function Login() {
             {status === "loading" ? "Signing..." : "Sign In"}
           </button>
         </form>
-
-        <div className="flex items-center mb-6">
-          <div className="flex-1 h-px bg-border" />
-          <span className="px-2 text-textSecondary text-xs font-medium">
-            or continue with
-          </span>
-          <div className="flex-1 h-px bg-border" />
-        </div>
-
-        <div className="flex justify-center gap-4 mb-6">
-          <img
-            src="/google.png"
-            onClick={googleOAuth}
-            alt="Google Login"
-            className="w-8 h-8 cursor-pointer hover:scale-110 transition-transform"
-          />
-          <img
-            src="/facebook.png"
-            onClick={facebook}
-            alt="Facebook Login"
-            className="w-8 h-8 cursor-pointer hover:scale-110 transition-transform"
-          />
-        </div>
-
-        <div className="text-center">
-          <span className="text-textSecondary text-xs">
-            Don&apos;t have an account?{" "}
-            <Link
-              to={"/signup"}
-              className="text-primary hover:text-secondary font-medium transition-skin hover:underline"
-            >
-              Sign up
-            </Link>
-          </span>
-        </div>
       </div>
     </div>
   );

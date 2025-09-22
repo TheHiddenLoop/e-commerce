@@ -4,6 +4,7 @@ import productReducer from "../features/products/productSlice"
 import cartReducer from "../features/cart/cartSlice"
 import orderReducer from "../features/order/OrderSlice"
 import adminProductReducer from "../features/admin/adminSlice"
+import adminAuthReducer from "../features/admin/adminAuth/adminAuthSlice"
 
 
 
@@ -14,5 +15,6 @@ export const store = configureStore({
     cart: cartReducer,
     order: orderReducer,
     adminProduct: adminProductReducer,
+    authAdmin: adminAuthReducer
   },
 });

@@ -5,19 +5,20 @@ import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { selectCartCount } from "../features/cart/cartSelectors";
 import logo from "../assets/logo2.png"
-import { selectAuth } from "../features/authentication/authSelectors";
+import { authUserCheck, selectAuth } from "../features/authentication/authSelectors";
 import userLogo from "../assets/user.png"
 
 export function Navbar({ onClick }) {
   const [isScrolled, setIsScrolled] = useState(false);
   const navigate = useNavigate();
-  const user=useSelector(selectAuth);
+  const user = useSelector(selectAuth);
+  const auth = useSelector(authUserCheck);
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 50);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);  
+  }, []);
 
   const scrollToSection = (sectionId) => {
     navigate("/");
@@ -27,7 +28,7 @@ export function Navbar({ onClick }) {
     }, 500)
   };
 
-  const counts = useSelector(selectCartCount)
+  const counts = useSelector(selectCartCount)  
 
   const navItems = ["Home", "Shop", "Categories", "Review", "Support"];
 
@@ -36,16 +37,16 @@ export function Navbar({ onClick }) {
       }`}>
       <div className="flex items-center justify-between h-full px-2 md:px-[80px]">
         <div className="flex items-center gap-2 md:gap-4 h-full">
-          <div className="cursor-pointer font-bold text-primary md:hidden" onClick={onClick}>
+          {auth && <div className="cursor-pointer font-bold text-primary md:hidden" onClick={onClick}>
             <MenuIcon size={24} />
-          </div>
+          </div>}
           <div className="h-[85px] w-auto">
             <img src={logo} alt="CltX Logo" className="h-full w-auto" />
           </div>
 
         </div>
 
-        <div className="flex items-start gap-10">
+        {auth && <div className="flex items-start gap-10">
           <ul className="gap-6 items-center hidden md:flex h-full">
             {navItems.map((item, idx) => (
               <li
@@ -104,13 +105,13 @@ export function Navbar({ onClick }) {
 
             <div className="flex items-center border-primary border-[3px] w-10 h-10 rounded-full justify-center cursor-pointer overflow-hidden">
               <img
-                src={user.profilePic ? user.profilePic : userLogo}
+                src={user.profilePic !=="" || user.profilePic ? user.profilePic : userLogo}
                 alt="Profile"
                 className="w-full h-full rounded-full transition-transform duration-300 hover:scale-105"
               />
             </div>
           </div>
-        </div>
+        </div>}
       </div>
     </div>
   );
