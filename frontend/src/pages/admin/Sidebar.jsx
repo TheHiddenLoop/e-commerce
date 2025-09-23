@@ -48,8 +48,8 @@ export default function Sidebar() {
       <div className="flex flex-col flex-1 pt-6">
         <div className="flex items-center justify-between px-4 mb-2">
           {!isCollapsed && (
-            <h2 className="text-lg font-semibold text-primary flex items-center gap-1">
-              CltX
+            <h2 className="text-xl font-bold text-primary flex items-center gap-2 tracking-wide">
+              Clt<sapn className="text-textPrimary ml-[-5px]">X</sapn>
             </h2>
           )}
           <button

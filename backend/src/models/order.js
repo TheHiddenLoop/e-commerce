@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-//seller: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true }
 
 const orderSchema = new mongoose.Schema(
   {
@@ -8,7 +7,6 @@ const orderSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
-    //seller: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
     shippingAddress: {
       address: { type: String, required: true },
       city: { type: String, required: true },

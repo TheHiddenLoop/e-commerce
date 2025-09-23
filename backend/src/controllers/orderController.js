@@ -1,6 +1,7 @@
 import Stripe from "stripe";
 import User from "../models/user.js";
 import { Order } from "../models/order.js";
+import Product from "../models/product.js";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
@@ -203,6 +204,127 @@ export const updateStatus = async (req, res) => {
     res.status(200).json({ success: true, message: "Status updated." });
   } catch (error) {
     console.error("Error in updateStatus:", error.message);
+    res.status(500).json({ success: false, message: "Internal Server Error" });
+  }
+};
+
+export const getSellersAnalyst = async (req, res) => {
+  try {
+    const userId = req.user._id;
+
+    const orders = await Order.find({ "orderItems.seller": userId })
+      .populate("user", "name email")
+      .populate("orderItems.product", "name image");
+
+    const sellerBasedItems = orders.map((order) => {
+      const sellerItems = order.orderItems.filter((item) =>
+        item.seller.equals(userId)
+      );
+
+      return {
+        orderId: order._id,
+        buyer: order.user,
+        shippingAddress: order.shippingAddress,
+        paymentMethod: order.paymentMethod,
+        paymentStatus: order.isPaid ? "Paid" : "Unpaid",
+        totalPrice: order.totalPrice,
+        taxPrice: order.taxPrice,
+        shippingPrice: order.shippingPrice,
+        deliveryStatus: order.deliveryStatus,
+        createdAt: order.createdAt,
+        items: sellerItems,
+      };
+    });
+
+    const category = await Product.aggregate([
+      { $match: { addedBy: userId } },
+      {
+        $group: {
+          _id: "$category",
+          count: { $sum: 1 },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          category: "$_id",
+          count: 1,
+        },
+      },
+    ]);
+    const totalAmount = sellerBasedItems.reduce(
+      (acc, curr) => (acc += curr.totalPrice),
+      0
+    );
+    const totalOrders = sellerBasedItems.length;
+    const netProfit = totalAmount * 1.15 - totalAmount;
+    const totalUser = new Set(orders.map((o) => o.user.toString())).size;
+
+    const sellerId = req.user._id;
+
+    const thirtyDaysAgo = new Date();
+    thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+    const last30Chart = await Order.aggregate([
+      {
+        $match: {
+          "orderItems.seller": sellerId,
+          createdAt: { $gte: thirtyDaysAgo },
+        },
+      },
+      { $unwind: "$orderItems" },
+      { $match: { "orderItems.seller": sellerId } },
+
+      {
+        $group: {
+          _id: {
+            year: { $year: "$createdAt" },
+            month: { $month: "$createdAt" },
+            day: { $dayOfMonth: "$createdAt" },
+          },
+          totalSales: {
+            $sum: { $multiply: ["$orderItems.price", "$orderItems.quantity"] },
+          },
+          orderIds: { $addToSet: "$_id" }, 
+        },
+      },
+
+      {
+        $project: {
+          _id: 0,
+          date: {
+            $dateToString: {
+              format: "%Y-%m-%d",
+              date: {
+                $dateFromParts: {
+                  year: "$_id.year",
+                  month: "$_id.month",
+                  day: "$_id.day",
+                },
+              },
+            },
+          },
+          totalSales: 1,
+          orderCount: { $size: "$orderIds" },
+        },
+      },
+
+      { $sort: { date: 1 } }, 
+    ]);
+
+    res
+      .status(200)
+      .json({
+        success: true,
+        totalAmount,
+        totalOrders,
+        netProfit: netProfit.toFixed(2),
+        totalUser,
+        category,
+        last30Chart,
+      });
+  } catch (error) {
+    console.error("Error in getOrderedItems:", error.message);
     res.status(500).json({ success: false, message: "Internal Server Error" });
   }
 };

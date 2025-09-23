@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { addProductApi, AllSellingProduct, orderedItemsApi, removeProductApi, updateStatusApi } from "./adminApi";
+import { addProductApi, AllSellingProduct, analyticalApi, orderedItemsApi, removeProductApi, updateStatusApi } from "./adminApi";
 import toast from "react-hot-toast";
 
 export const addProduct = createAsyncThunk(
@@ -85,12 +85,26 @@ export const updateStatus = createAsyncThunk(
   }
 );
 
+export const analyticalData = createAsyncThunk(
+  "orders/data",
+  async (_, thunkAPI) => {
+    try {
+      const data = await analyticalApi();
+      return data;
+    } catch (err) {
+      return thunkAPI.rejectWithValue(
+        err.response?.data?.message || err.message
+      );
+    }
+  }
+);
+
 
 export const adminProduct = createSlice({
   name: "adminProduct",
   initialState: {
     sellingProducts: [],
-    singleProduct: null,
+    analysticalData: [],
     orderedItems:[],
     status: "idle",
     error: null,
@@ -109,7 +123,6 @@ export const adminProduct = createSlice({
       })
       .addCase(addProduct.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.singleProduct = action.payload;
         state.sellingProducts.push(action.payload); // optional if keeping a list
       })
       .addCase(addProduct.rejected, (state, action) => {
@@ -166,6 +179,20 @@ export const adminProduct = createSlice({
         state.status = "succeeded";
       })
       .addCase(updateStatus.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.payload;
+      })
+
+
+      .addCase(analyticalData.pending, (state) => {
+        state.status = "loading";
+        state.error = null;
+      })
+      .addCase(analyticalData.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.analysticalData = action.payload;
+      })
+      .addCase(analyticalData.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.payload;
       })

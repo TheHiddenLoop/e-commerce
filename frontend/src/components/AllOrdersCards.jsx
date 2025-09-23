@@ -33,23 +33,22 @@ export default function AllOrdersCards({ names, user, items, address, price, sta
 
       <div className="flex items-center">
         <select
-  name="orderStatus"
-  id="orderStatus"
-  defaultValue={status}  // ✅ uncontrolled
-  onChange={(e) => {
-    const newStatus = e.target.value.charAt(0).toUpperCase() + e.target.value.slice(1).toLowerCase();
-    onStatusChange(newStatus);
-  }}
-  className="border border-border rounded-lg px-3 py-1.5 text-sm bg-bgPrimary text-textPrimary focus:ring-2 focus:ring-primary focus:outline-none"
->
-  <option value="pending">Pending</option>
-  <option value="processing">Processing</option>
-  <option value="success">Successful</option>
-  <option value="shipped">Shipped</option>
-  <option value="delivered">Delivered</option>
-  <option value="cancelled">Cancelled</option>
-  <option value="returned">Returned</option>
-</select>
+          name="orderStatus"
+          id="orderStatus"
+          defaultValue={status}  
+          onChange={(e) => {
+            const newStatus = e.target.value.charAt(0).toUpperCase() + e.target.value.slice(1).toLowerCase();
+            onStatusChange(newStatus);
+          }}
+          className="border border-border rounded-lg px-3 py-1.5 text-sm bg-bgPrimary text-textPrimary focus:ring-2 focus:ring-primary focus:outline-none"
+        >
+          <option value="pending">Pending</option>
+          <option value="processing">Processing</option>
+          <option value="shipped">Shipped</option>
+          <option value="delivered">Delivered</option>
+          <option value="cancelled">Cancelled</option>
+          <option value="returned">Returned</option>
+        </select>
 
       </div>
     </div>

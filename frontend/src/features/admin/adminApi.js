@@ -60,3 +60,15 @@ export const updateStatusApi = async (id, status) => {
     throw new Error(message);
   }
 };
+
+
+export const analyticalApi = async () => {
+  try {
+    const res = await axiosInstance.get("/order/analytical/data");
+    return res.data;
+  } catch (err) {
+    const message =
+      err.response?.data?.message || err.message || "Failed to fetch product";
+    throw new Error(message);
+  }
+};
