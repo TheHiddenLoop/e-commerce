@@ -45,7 +45,7 @@ export const signin = async (formData) => {
 
 export const logout = async () => {
   try {
-    const res = await axiosInstance.post("/logout");    
+    const res = await axiosInstance.post("auth/logout");    
     return res.data; 
   } catch (err) {
     const message =

@@ -1,24 +1,50 @@
-import { MenuIcon, ShoppingBag, ShoppingCart } from "lucide-react";
-import { useEffect, useState } from "react";
+import { Icon, MenuIcon, ShoppingBag, ShoppingCart, UserCog, LogOut } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { selectCartCount } from "../features/cart/cartSelectors";
 import logo from "../assets/logo2.png"
 import { authUserCheck, selectAuth } from "../features/authentication/authSelectors";
 import userLogo from "../assets/user.png"
+import { logoutAuth } from "../features/authentication/authSlice";
 
 export function Navbar({ onClick }) {
   const [isScrolled, setIsScrolled] = useState(false);
   const navigate = useNavigate();
   const user = useSelector(selectAuth);
   const auth = useSelector(authUserCheck);
+  const [isVisible, setIsVisible] = useState(false);
+  const menuRef = useRef(null);
+  const buttonRef = useRef(null);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 50);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  useEffect(() => {
+    function handleClickOutside(e) {
+      if (
+        menuRef.current &&
+        !menuRef.current.contains(e.target) &&
+        buttonRef.current &&
+        !buttonRef.current.contains(e.target)
+      ) {
+        setIsVisible(false);
+      }
+    }
+
+    if (isVisible) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isVisible]);
 
   const scrollToSection = (sectionId) => {
     navigate("/");
@@ -28,9 +54,23 @@ export function Navbar({ onClick }) {
     }, 500)
   };
 
-  const counts = useSelector(selectCartCount)  
+  const counts = useSelector(selectCartCount)
 
   const navItems = ["Home", "Shop", "Categories", "Review", "Support"];
+  const menuItems = [
+    { name: "Profile Setting", label: "profile", icon: UserCog, to: "/user/profile" },
+    { name: "My Orders", label: "orders", icon: ShoppingBag, to: "/order/history" },
+    { name: "Log out", label: "logout", icon: LogOut }
+  ];
+
+  const handleLogout = (lebel) => {
+    if (lebel === "logout") {
+      dispatch(logoutAuth());
+    }
+    setIsVisible(false);
+    navigate("/login")
+  }
+
 
   return (
     <div className={`fixed top-0 left-0 right-0 z-[500] bg-bgGlass backdrop-blur-[20px] border-b border-b-border h-16 ${isScrolled ? "shadow-glass" : ""
@@ -103,15 +143,26 @@ export function Navbar({ onClick }) {
             </div>
 
 
-            <div className="flex items-center border-primary border-[3px] w-10 h-10 rounded-full justify-center cursor-pointer overflow-hidden">
+            <div ref={buttonRef} onClick={() => setIsVisible(!isVisible)} className="flex items-center border-primary border-[3px] w-10 h-10 rounded-full justify-center cursor-pointer overflow-hidden">
               <img
-                src={user.profilePic !=="" || user.profilePic ? user.profilePic : userLogo}
+                src={user?.profilePic ? user.profilePic : userLogo}
                 alt="Profile"
                 className="w-full h-full rounded-full transition-transform duration-300 hover:scale-105"
               />
+
             </div>
+            {isVisible && <div ref={menuRef} className="hidden md:block absolute top-16 right-4 md:right-20 text-textPrimary p-2 rounded-lg bg-bgPrimary">
+              <div className="flex flex-col gap-2 px-2 py-1">
+                {menuItems.map((e, i) => (
+                  <Link onClick={() => handleLogout(e.label)} to={e.to} key={i} className="py-3 flex items-center gap-1 px-2 rounded-md cursor-pointer text-sm font-semibold  border-l-4  border-transparent  text-textPrimary hover:border-accent hover:bg-bgSecondary hover:text-primary">{<e.icon size={20} className="text-primary font-bold" />} {e.name}</Link>
+                ))}
+              </div>
+            </div>}
+
           </div>
-        </div>}
+        </div>
+        }
+
       </div>
     </div>
   );

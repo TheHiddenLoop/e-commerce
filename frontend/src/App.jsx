@@ -30,6 +30,7 @@ import AddProducts from "./components/admin/AddProducts";
 import Orders from "./components/admin/Orders";
 
 import Layout from "./components/UI/Layout";
+import ProfilePage from "./pages/ProfilePage";
 
 export default function Page() {
   const dispatch = useDispatch();
@@ -89,6 +90,10 @@ export default function Page() {
         <Route
           path="/order/history"
           element={user ? <OrderHistory /> : <Navigate to="/login" replace />}
+        />
+        <Route
+          path="/user/profile"
+          element={user ? <ProfilePage /> : <Navigate to="/login" replace />}
         />
 
         {/* ---------- ADMIN ROUTES ---------- */}

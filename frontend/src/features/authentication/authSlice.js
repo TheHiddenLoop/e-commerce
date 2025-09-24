@@ -159,6 +159,7 @@ const authSlice = createSlice({
       .addCase(logoutAuth.fulfilled, (state) => {
         state.status = "succeeded";
         state.user = null;
+        state.authUser = false;
       })
       .addCase(logoutAuth.rejected, (state) => {
         state.status = "failed";
