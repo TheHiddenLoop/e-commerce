@@ -3,6 +3,8 @@ import { userToken } from "../utils/generateToken.js"
 import bcrypt from "bcryptjs"
 import { sendOTPEmail } from "../utils/email.js"
 import { otpVerificationTemplate, passwordResetSuccessTemplate, resetPasswordTemplate } from "../utils/emailTemplets.js";
+import { cloudinary } from "../utils/cloudinary.js";
+import streamifier from "streamifier";
 
 const SALT_ROUNDS = 10;
 const OTP_EXPIRY_MINUTES = 5;
@@ -314,5 +316,51 @@ export const logout = async (req, res) => {
   } catch (error) {
     console.error('Logout error:', error.message);
     res.status(500).json({ message: 'Server error during logout' });
+  }
+};
+
+
+function uploadToCloudinary(fileBuffer) {
+  return new Promise((resolve, reject) => {
+    const stream = cloudinary.uploader.upload_stream({ folder: "products" }, (error, result) => {
+      if (error) reject(error); else resolve(result);
+    });
+    streamifier.createReadStream(fileBuffer).pipe(stream);
+  });
+}
+
+
+export const updateProfile = async (req, res) => {
+  try {
+    const { name, phone, dob, address, city, state, postalCode, country } = req.body;
+    const userId = req.user._id;
+
+    const user = await User.findById(userId);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    if (req.file) {
+      const result = await uploadToCloudinary(req.file.buffer);
+      user.profilePic = result.secure_url;
+    }
+
+    if (name) user.name = name;
+    if (phone) user.phone = phone;
+    if (dob) user.dob = dob;
+
+    if (address || city || state || postalCode || country) {
+      user.address = {
+        address: address || user.address?.address,
+        city: city || user.address?.city,
+        state: state || user.address?.state,
+        postalCode: postalCode || user.address?.postalCode,
+        country: country || user.address?.country,
+      };
+    }
+
+    await user.save();
+    res.json({ message: "Profile updated successfully", user });
+  } catch (error) {
+    console.error("Update profile error:", error);
+    res.status(500).json({ message: "Server error during profile update" });
   }
 };

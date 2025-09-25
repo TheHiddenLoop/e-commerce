@@ -28,6 +28,8 @@ export default function CheckoutPage() {
 
   const location = useLocation();
   const { orderDetails } = location.state || {};
+  console.log(orderDetails);
+  
 
   const savedAddress = {
     name: authUser.name,

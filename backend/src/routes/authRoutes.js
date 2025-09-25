@@ -8,9 +8,12 @@ import {
   requestPasswordReset,
   resetPassword,
   logout,
+  updateProfile,
 } from "../controllers/authController.js";
 import { protectRoute } from "../middlewares/authMiddleware.js";
 import { userToken } from "../utils/generateToken.js";
+import upload from "../middlewares/multer.js"
+
 
 const authRouter = Router();
 
@@ -21,7 +24,7 @@ authRouter.get("/me", protectRoute, checkAuth);
 authRouter.post("/forgot-password", requestPasswordReset); 
 authRouter.post("/reset-password", resetPassword);      
 authRouter.post("/logout", protectRoute, logout);
-
+authRouter.put("/update/profile", protectRoute, upload.single("image"), updateProfile);
 
 
 

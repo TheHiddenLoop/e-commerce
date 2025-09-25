@@ -58,8 +58,8 @@ export function Navbar({ onClick }) {
 
   const navItems = ["Home", "Shop", "Categories", "Review", "Support"];
   const menuItems = [
-    { name: "Profile Setting", label: "profile", icon: UserCog, to: "/user/profile" },
-    { name: "My Orders", label: "orders", icon: ShoppingBag, to: "/order/history" },
+    { name: "Account Settings", label: "account", icon: UserCog, to: "/user/profile" },
+    { name: "Order History", label: "orders", icon: ShoppingBag, to: "/order/history" },
     { name: "Log out", label: "logout", icon: LogOut }
   ];
 
@@ -151,13 +151,37 @@ export function Navbar({ onClick }) {
               />
 
             </div>
-            {isVisible && <div ref={menuRef} className="hidden md:block absolute top-16 right-4 md:right-20 text-textPrimary p-2 rounded-lg bg-bgPrimary">
-              <div className="flex flex-col gap-2 px-2 py-1">
-                {menuItems.map((e, i) => (
-                  <Link onClick={() => handleLogout(e.label)} to={e.to} key={i} className="py-3 flex items-center gap-1 px-2 rounded-md cursor-pointer text-sm font-semibold  border-l-4  border-transparent  text-textPrimary hover:border-accent hover:bg-bgSecondary hover:text-primary">{<e.icon size={20} className="text-primary font-bold" />} {e.name}</Link>
-                ))}
+            {isVisible && (
+              <div
+                ref={menuRef}
+                className="hidden md:block absolute top-16 right-4 md:right-20 
+               text-textPrimary p-2 rounded-xl shadow-lg bg-bgPrimary"
+              >
+                <div className="flex flex-col gap-1">
+                  {menuItems.map((item, i) => (
+                    <Link
+                      key={i}
+                      to={item.to || "#"}
+                      onClick={() => item.label === "logout" && handleLogout(item.label)}
+                      className="
+                        group flex items-center gap-3 px-4 py-2
+                        rounded-lg text-sm font-medium
+                        border-l-4 border-transparent
+                        hover:border-accent hover:bg-bgSecondary
+                        transition-colors duration-200
+                      "
+                    >
+                      <item.icon
+                        size={20}
+                        className="text-primary group-hover:scale-110 transition-transform duration-200"
+                      />
+                      <span className="group-hover:text-primary">{item.name}</span>
+                    </Link>
+                  ))}
+                </div>
               </div>
-            </div>}
+            )}
+
 
           </div>
         </div>

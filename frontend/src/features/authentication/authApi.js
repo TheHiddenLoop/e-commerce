@@ -53,3 +53,18 @@ export const logout = async () => {
     throw new Error(message);
   }
 };
+
+
+export const updateProfile = async (formData) => {
+  try {
+    const res = await axiosInstance.put("auth/update/profile", formData, {
+      headers: { "Content-Type": "multipart/form-data" }, 
+    });
+    return res.data;
+  } catch (err) {
+    const message =
+      err.response?.data?.message || err.message || "Profile update failed";
+    throw new Error(message);
+  }
+};
+

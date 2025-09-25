@@ -61,8 +61,19 @@ const userSchema = new mongoose.Schema(
     },
     profilePic: {
       type: String,
-      default: null,
+      default: "https://res.cloudinary.com/dwbbklguy/image/upload/v1758792557/user_la2tr5.png",
     },
+    phone: {
+    type: String,
+    unique: true,
+    set: (v) => {
+      const cleaned = v.replace(/^\+91|[^0-9]/g, "");
+      return `+91${cleaned}`;
+    },
+  },
+  dob: {
+    type: Date,
+  },
   },
   {
     timestamps: true,

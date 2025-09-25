@@ -1,4 +1,4 @@
-import { signup, signin, check, logout, verifyOtp } from "./authApi";
+import { signup, signin, check, logout, verifyOtp, updateProfile } from "./authApi";
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import toast from "react-hot-toast"
 
@@ -53,13 +53,31 @@ export const signinAuth = createAsyncThunk(
   }
 );
 
+export const updateProfileAuth = createAsyncThunk(
+  "auth/update-profile",
+  async (formData, thunkAPI) => {
+    try {
+      const data = await updateProfile(formData);
+      console.log(data);
+      
+      toast.success(data.message);
+      return data.user;
+    } catch (err) {
+      toast.error(err.message);
+      return thunkAPI.rejectWithValue(
+        err.response?.data?.message || err.message
+      );
+    }
+  }
+);
+
 export const checkAuth = createAsyncThunk("auth/check", async (_, thunkAPI) => {
   try {
     const data = await check();
     if (!data || !data.isVerified) {
       return thunkAPI.rejectWithValue("User not verified");
     }
-
+    
     return data;
   } catch (err) {
     return thunkAPI.rejectWithValue(err.response?.data?.message || err.message);
@@ -135,6 +153,19 @@ const authSlice = createSlice({
         state.user = action.payload;
       })
       .addCase(signinAuth.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.payload;
+      })
+      //update profile
+      .addCase(updateProfileAuth.pending, (state) => {
+        state.status = "loading";
+        state.error = null;
+      })
+      .addCase(updateProfileAuth.fulfilled, (state, action) => {
+        state.status = "succeeded";
+        state.user = action.payload;
+      })
+      .addCase(updateProfileAuth.rejected, (state, action) => {
         state.status = "failed";
         state.error = action.payload;
       })

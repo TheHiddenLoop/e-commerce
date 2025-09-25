@@ -5,11 +5,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { singleProduct } from "../features/products/productSelectors";
 import { viewProduct } from "../features/products/productSlice";
 import { addCart } from "../features/cart/cartSlice";
+import { useNavigate } from "react-router-dom";
 
 export function ProductDetails() {
   const { id } = useParams();
   const dispatch = useDispatch();
   const product = useSelector(singleProduct);
+  const navigate=useNavigate();
 
   const [order, setOrder] = useState(null);
 
@@ -61,8 +63,6 @@ export function ProductDetails() {
 
   const handleBuy = (data) => {
     if (!product) return;
-    console.log(data);
-
 
     const subtotal = product.price * data.quantity;
     const originalTotal = product.originalPrice
@@ -74,24 +74,29 @@ export function ProductDetails() {
     const tax = Math.round(subtotal * 0.08);
     const total = subtotal + shipping + tax;
 
-    setOrder((prev) => ({
-      ...prev,
+    const orderData = {
       subtotal,
       savings,
       shipping,
       tax,
       total,
-      itemCount: 1,
+      itemCount: data.quantity,
       products: [
         {
-          ...prev.products[0],
+          id: product._id,
+          name: product.name,
+          price: product.price,
+          image: product.images[0] || null,
           quantity: data.quantity,
-          selectedColor: data.selectedColor || null,
-          selectedSize: data.selectedSize || null,
+          selectedColor: data.selectedColor,
+          selectedSize: data.selectedSize,
           lineTotal: product.price * data.quantity,
         },
       ],
-    }));
+    };
+
+    // Navigate to /order with state
+    navigate("/order", { state: { orderDetails: orderData } });
   };
 
   if (!product || !order) {
@@ -110,7 +115,6 @@ export function ProductDetails() {
         sizes={product.sizes || []}
         onAddCart={handleAddCart}
         onBuy={handleBuy}
-        orderDetails={order}
       />
     </div>
   );

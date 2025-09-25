@@ -154,7 +154,6 @@ export function ProductDetailCard({ images, name, sizes, originalPrice, discount
             >
               Add to Cart
             </motion.button>
-            <Link to={"/order"} state={{ orderDetails }}>
               <motion.button
                 whileTap={{ scale: 0.95 }}
                 onClick={() => onBuy({ selectedColor, quantity, selectedSize })}
@@ -162,7 +161,6 @@ export function ProductDetailCard({ images, name, sizes, originalPrice, discount
               >
                 Buy Now
               </motion.button>
-            </Link>
           </div>
         </div>
       </div>
