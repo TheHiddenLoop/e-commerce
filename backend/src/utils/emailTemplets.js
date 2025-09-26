@@ -247,3 +247,40 @@ export const passwordResetSuccessTemplate = () => `
 </body>
 </html>
 `;
+
+
+export const supportEmailTemplate = ( name, email, message ) => `
+  <!DOCTYPE html>
+  <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Support Request</title>
+  </head>
+  <body style="font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px; color: #333;">
+    <table style="max-width: 600px; margin: auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+      <tr>
+        <td style="text-align: center;">
+          <h2 style="color: #3182ce;">New Support Request</h2>
+          <p style="margin: 20px 0; font-size: 16px;">
+            You have received a new support request from your website.
+          </p>
+          <div style="text-align: left; background-color: #f1f1f1; padding: 15px; border-radius: 5px;">
+            <p><strong>Name:</strong> ${name}</p>
+            <p><strong>Email:</strong> ${email}</p>
+            <p><strong>Message:</strong></p>
+            <p>${message}</p>
+          </div>
+          <p style="font-size: 14px; color: #555; margin-top: 20px;">
+            Please respond to the user as soon as possible.
+          </p>
+          <hr style="margin: 30px 0; border: none; border-top: 1px solid #eee;" />
+          <p style="font-size: 12px; color: #aaa;">
+            &copy; ${new Date().getFullYear()} Your Company. All rights reserved.
+          </p>
+        </td>
+      </tr>
+    </table>
+  </body>
+  </html>
+`;

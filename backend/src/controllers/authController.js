@@ -2,7 +2,7 @@ import User from "../models/user.js";
 import { userToken } from "../utils/generateToken.js"
 import bcrypt from "bcryptjs"
 import { sendOTPEmail } from "../utils/email.js"
-import { otpVerificationTemplate, passwordResetSuccessTemplate, resetPasswordTemplate } from "../utils/emailTemplets.js";
+import { otpVerificationTemplate, passwordResetSuccessTemplate, resetPasswordTemplate, supportEmailTemplate } from "../utils/emailTemplets.js";
 import { cloudinary } from "../utils/cloudinary.js";
 import streamifier from "streamifier";
 
@@ -347,13 +347,14 @@ export const updateProfile = async (req, res) => {
     if (phone) user.phone = phone;
     if (dob) user.dob = dob;
 
-    if (address || city || state || postalCode || country) {
+    if (address || city || state || postalCode || country || phone) {
       user.address = {
         address: address || user.address?.address,
         city: city || user.address?.city,
         state: state || user.address?.state,
         postalCode: postalCode || user.address?.postalCode,
         country: country || user.address?.country,
+        phone:phone || user.address?.phone
       };
     }
 
@@ -362,5 +363,36 @@ export const updateProfile = async (req, res) => {
   } catch (error) {
     console.error("Update profile error:", error);
     res.status(500).json({ message: "Server error during profile update" });
+  }
+};
+
+
+export const supportUser = async (req, res) => {
+  try {
+    const { name, email, message } = req.body;
+
+    if (!name || !email || !message) {
+      return res.status(400).json({
+        success: false,
+        message: "All fields are required.",
+      });
+    }
+
+    const body = supportEmailTemplate(name, email, message);
+
+    await sendOTPEmail(
+      process.env.SUPPORT_EMAIL,
+      `New Support Request from ${name}`,
+      body
+    );
+
+
+    res.status(200).json({
+      success: true,
+      message: "Support message sent successfully!",
+    });
+  } catch (error) {
+    console.error("Support user error:", error);
+    res.status(500).json({ message: "Server error while sending support message" });
   }
 };

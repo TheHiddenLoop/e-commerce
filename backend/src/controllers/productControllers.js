@@ -43,7 +43,38 @@ export const addProduct = async (req, res, next) => {
 
 export const allProduct = async (req, res) => {
   try {
-    const products = await Product.find();
+    const { search, category, brand, minPrice, maxPrice, sortBy } = req.query;
+
+    let filter = {};
+
+    if (search) {
+      filter.$or = [
+        { name: { $regex: search, $options: "i" } },
+        { description: { $regex: search, $options: "i" } },
+        { tags: { $regex: search, $options: "i" } },
+      ];
+    }
+
+    if (category) filter.category = category;
+    if (brand) filter.brand = brand;
+    if (minPrice) filter.price = { ...filter.price, $gte: Number(minPrice) };
+    if (maxPrice) filter.price = { ...filter.price, $lte: Number(maxPrice) };
+
+    let query = Product.find(filter);
+
+    switch (sortBy) {
+      case "price-low":
+        query = query.sort({ price: 1 });
+        break;
+      case "price-high":
+        query = query.sort({ price: -1 });
+        break;
+      default:
+        query = query.sort({ name: 1 });
+    }
+
+    const products = await query;
+
     return res.status(200).json({
       success: true,
       message: "All products fetched successfully",
@@ -131,3 +162,49 @@ export const removeProduct = async (req, res) => {
     });
   }
 };
+
+export const review = async (req, res) => {
+  try {
+    const { productId } = req.params;
+    const { comment, rating } = req.body;
+    const user = req.user;
+
+    const product = await Product.findById(productId);
+    if (!product) {
+      return res.status(404).json({ success: false, message: "Product not found" });
+    }
+
+    if (!comment || !rating) {
+      return res.status(400).json({ success: false, message: "All fields are required" });
+    }
+
+    const newReview = {
+      user: user._id,
+      name: user.name, 
+      rating,
+      productId:productId,
+      comment,
+    };
+
+    product.reviews.unshift(newReview); 
+    product.rating = rating; 
+
+    await product.save();
+
+    return res.status(201).json({
+      success: true,
+      message: "Review added successfully",
+      review: newReview, 
+      rating: product.rating 
+    });
+  } catch (error) {
+    console.error("Error Adding review:", error.message);
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
+  }
+};
+
+
+

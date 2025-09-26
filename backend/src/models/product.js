@@ -20,7 +20,7 @@ const productSchema = new mongoose.Schema(
     reviews: [
       {
         user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-        username: { type: String, trim: true },
+        name: { type: String, trim: true },
         rating: { type: Number },
         comment: { type: String, trim: true },
         date: { type: Date, default: Date.now }

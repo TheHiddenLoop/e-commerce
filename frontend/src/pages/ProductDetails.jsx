@@ -6,12 +6,14 @@ import { singleProduct } from "../features/products/productSelectors";
 import { viewProduct } from "../features/products/productSlice";
 import { addCart } from "../features/cart/cartSlice";
 import { useNavigate } from "react-router-dom";
+import { Loader2 } from "lucide-react";
+import Rating from "../components/Rating";
 
 export function ProductDetails() {
   const { id } = useParams();
   const dispatch = useDispatch();
   const product = useSelector(singleProduct);
-  const navigate=useNavigate();
+  const navigate = useNavigate();
 
   const [order, setOrder] = useState(null);
 
@@ -95,16 +97,15 @@ export function ProductDetails() {
       ],
     };
 
-    // Navigate to /order with state
     navigate("/order", { state: { orderDetails: orderData } });
   };
 
   if (!product || !order) {
-    return <div className="p-6">Loading product details...</div>;
+    return <div className="p-6 flex items-center justify-center"><Loader2 className="animate-spin text-primary" /></div>;
   }
 
   return (
-    <div className="min-h-[calc(100vh-65px)] bg-[radial-gradient(circle_at_25%_85%,rgba(245,158,11,0.1)_0%,transparent_50%),radial-gradient(circle_at_75%_15%,rgba(244,63,94,0.1)_0%,transparent_50%)] px-6 md:px-20 py-8">
+    <div className="min-h-[calc(100vh-65px)] bg-[radial-gradient(circle_at_25%_85%,rgba(245,158,11,0.1)_0%,transparent_50%),radial-gradient(circle_at_75%_15%,rgba(244,63,94,0.1)_0%,transparent_50%)] px-6 md:px-20 py-7">
       <ProductDetailCard
         images={product.images || []}
         name={product.name}
@@ -116,6 +117,13 @@ export function ProductDetails() {
         onAddCart={handleAddCart}
         onBuy={handleBuy}
       />
+
+      <div className="w-full h-[1px] bg-border mt-7"></div>
+
+      <div className="w-full max-w-5xl mx-auto py-6 md:px-4 ">
+        <Rating id={product._id} product={product}/>
+      </div>
+
     </div>
   );
 }

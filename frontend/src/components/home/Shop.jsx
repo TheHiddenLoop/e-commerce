@@ -1,44 +1,40 @@
-import { useRef } from "react";
+import { useState } from "react";
 import { ProductCard } from "../ProductCard";
-import { ChevronLeft, ChevronRight, ArrowRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { selectProduct } from "../../features/products/productSelectors";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { addCart } from "../../features/cart/cartSlice";
 
 export default function ShopCarousel() {
-  const carouselRef = useRef(null);  
-    
-  const products=useSelector(selectProduct);
-  const filterdProduct=products.filter(e=>e.isFeatured)
-  const dispatch=useDispatch();
+  const products = useSelector(selectProduct);
+  const filterdProduct = products.filter((e) => e.isFeatured);
+  const dispatch = useDispatch();
 
-  const scroll = (direction) => {
-    if (!carouselRef.current) return;
+  const [visibleCount, setVisibleCount] = useState(4);
 
-    const carousel = carouselRef.current;
-    const scrollAmount = carousel.querySelector("div").offsetWidth + 24; 
-
-    carousel.scrollBy({
-      left: direction === "left" ? -scrollAmount : scrollAmount,
-      behavior: "smooth",
-    });
+  const handleAddCart = (data) => {
+    const formData = {
+      productId: data._id,
+      price: data.price,
+      size: data.size,
+      color: data.color,
+    };
+    dispatch(addCart(formData));
   };
 
-  const handleAddCart=async (data) => {
-    const formData={ productId:data._id, price:data.price, size:data.size, color:data.color }    
-    dispatch(addCart(formData));
-  }
+  const handleLoadMore = () => {
+    setVisibleCount((prev) => prev + 4);
+  };
 
   return (
-    <div className="px-4 md:px-20 py-8 min-h-screen">
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8">
+    <div className="px-4 md:px-12 lg:px-20 py-10">
+      <div className="flex flex-col sm:flex-row justify-between items-center sm:items-center mb-8">
         <h2 className="text-3xl md:text-4xl font-bold text-textPrimary mb-4 sm:mb-0">
           Shop Our Collection
         </h2>
-        <Link to={"/products"}>
-          <button
-          className="flex items-center gap-2 font-semibold bg-primary text-white px-5 py-3 rounded-full shadow-sm hover:shadow-md transition-shadow ml-[30%] my-3 sm:my-0 md:ml-0"
+        <Link to={"/products"}><button
+                    className="flex items-center gap-2 font-semibold bg-primary text-white px-5 py-2 rounded-full shadow-sm hover:shadow-md transition-shadow ml-[30%] my-3 sm:my-0 md:ml-0"
         >
           Show All Products
           <ArrowRight size={20} />
@@ -46,43 +42,31 @@ export default function ShopCarousel() {
         </Link>
       </div>
 
-      <div className="relative overflow-hidden">
-        <div
-          ref={carouselRef}
-          className="scrollBar flex gap-6 overflow-x-auto scroll-smooth no-scrollbar sm:mx-5 md:mx-20 py-2"
-        >
-          {filterdProduct.map((item, index) => (
-            <div key={index} className="flex-shrink-0"> 
-              <ProductCard
-                image={item.images[0]}
-                name={item.name}
-                description={item.description}
-                price={item.price}
-                cart={true}
-                onclick={()=>handleAddCart(item)}
-              />
-            </div>
-          ))}
+      <div className="grid gap-6 sm:gap-8 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+        {filterdProduct.slice(0, visibleCount).map((item, index) => (
+          <ProductCard
+            key={index}
+            image={item.images[0]}
+            name={item.name}
+            description={item.description}
+            price={item.price}
+            cart={true}
+            brand={item.brand}
+            onclick={() => handleAddCart(item)}
+          />
+        ))}
+      </div>
+
+      {visibleCount < filterdProduct.length && (
+        <div className="flex justify-center mt-12">
+          <button
+            onClick={handleLoadMore}
+            className="px-4 sm:px-6 md:px-8 py-2 sm:py-3 bg-primary text-white font-semibold text-sm sm:text-base md:text-lg rounded-full shadow-md hover:shadow-lg hover:scale-105 active:scale-95 transition-all"
+          >
+            Load More
+          </button>
         </div>
-
-        <div className="absolute top-0 left-0 bottom-0 w-16 bg-gradient-to-r from-bg-secondary pointer-events-none" />
-        <div className="absolute top-0 right-0 bottom-0 w-16 bg-gradient-to-l from-bg-secondary pointer-events-none" />
-      </div>
-
-      <div className="flex justify-center items-center gap-4 mt-8">
-        <button
-          onClick={() => scroll("left")}
-          className="p-2 bg-border hover:bg-ring rounded-lg shadow-md transition w-20 flex items-center justify-center text-textPrimary"
-        >
-          <ChevronLeft size={28} />
-        </button>
-        <button
-          onClick={() => scroll("right")}
-          className="p-2 bg-border hover:bg-ring rounded-lg shadow-md transition w-20 flex items-center justify-center text-textPrimary"
-        >
-          <ChevronRight size={28} />
-        </button>
-      </div>
+      )}
     </div>
   );
 }

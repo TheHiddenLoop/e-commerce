@@ -1,6 +1,8 @@
 import { useState } from "react"
 import { Mail, Phone, MapPin } from "lucide-react"
 import { useInView } from "react-intersection-observer";
+import { supportAuth } from "../../features/authentication/authSlice";
+import { useDispatch, useSelector } from "react-redux";
 
 
 export default function Contact() {
@@ -21,10 +23,10 @@ export default function Contact() {
         triggerOnce: true,
         threshold: 0.2,
     });
-
+    const dispatch=useDispatch();
     const handleSubmit = (e) => {
         e.preventDefault()
-        console.log("Form submitted:", formData)
+        dispatch(supportAuth(formData));
         setFormData({ name: "", email: "", message: "" })
     }
 

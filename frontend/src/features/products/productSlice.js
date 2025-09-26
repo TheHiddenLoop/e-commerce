@@ -1,15 +1,16 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { getAllProduct, viewProductApi } from "./productApi";
+import { getAllProduct, reviewApi, viewProductApi } from "./productApi";
+import toast from "react-hot-toast";
 
 export const getProducts = createAsyncThunk(
   "product/all-product",
-  async (_, thunkAPI) => {
+  async (filters = {}, thunkAPI) => {
     try {
-      const data = await getAllProduct();
+      const data = await getAllProduct(filters);
       return data;
     } catch (err) {
       return thunkAPI.rejectWithValue(
-        err.response?.data?.message || err.message
+        err.message || "Failed to fetch products"
       );
     }
   }
@@ -20,6 +21,8 @@ export const viewProduct = createAsyncThunk(
   async (id, thunkAPI) => {
     try {
       const data = await viewProductApi(id);
+      console.log(data);
+      
       return data;
     } catch (err) {
       return thunkAPI.rejectWithValue(
@@ -29,14 +32,28 @@ export const viewProduct = createAsyncThunk(
   }
 );
 
-
+export const reviewProduct = createAsyncThunk(
+  "product/review",
+  async ({ id, formData }, thunkAPI) => {
+    try {
+      const data = await reviewApi(id, formData);
+      toast.success(data.message);
+      console.log(data);
+      return data;
+    } catch (err) {
+      return thunkAPI.rejectWithValue(
+        err.response?.data?.message || err.message
+      );
+    }
+  }
+);
 
 const productSlice = createSlice({
   name: "product",
   initialState: {
     products: [],
-    singleProduct:[],
-    status: "idle", 
+    singleProduct: [],
+    status: "idle",
     error: null,
   },
   reducers: {
@@ -72,6 +89,25 @@ const productSlice = createSlice({
         state.status = "failed";
         state.error = action.payload;
       })
+      //review
+      .addCase(reviewProduct.pending, (state) => {
+        state.status = "loading";
+        state.error = null;
+      })
+      .addCase(reviewProduct.fulfilled, (state, action) => {
+        state.status = "succeeded";
+
+        const { productId, review } = action.payload; 
+
+        const product = state.products.find((p) => p._id === productId);
+        if (product) {
+          product.reviews.unshift(review);
+        }
+      })
+      .addCase(reviewProduct.rejected, (state, action) => {
+        state.status = "failed";
+        state.error = action.payload;
+      });
   },
 });
 

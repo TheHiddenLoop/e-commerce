@@ -12,19 +12,21 @@ export function ProductDetailCard({ images, name, sizes, originalPrice, discount
   const [quantity, setQuantity] = useState(1);
 
   useEffect(() => {
-    setSelectedColor(null);
-    setSelectedImage(null);
-    setSelectedSize(null);
-    if (images && images.length > 0) {
-      setSelectedImage(images[0]);
-    }
-    if (colors && colors.length > 0) {
-      setSelectedColor(colors[0]);
-    }
-    if (sizes && sizes.length > 0) {
-      setSelectedColor(sizes[0]);
-    }
-  }, [images]);
+  setSelectedColor(null);
+  setSelectedImage(null);
+  setSelectedSize(null);
+
+  if (images && images.length > 0) {
+    setSelectedImage(images[0]);
+  }
+  if (colors && colors.length > 0) {
+    setSelectedColor(colors[0]);
+  }
+  if (sizes && sizes.length > 0) {
+    setSelectedSize(sizes[0]); // ✅ correct setter
+  }
+}, [images, colors, sizes]); 
+
 
   return (
     <div className="text-textPrimary flex flex-col lg:flex-row gap-6 lg:p-6">

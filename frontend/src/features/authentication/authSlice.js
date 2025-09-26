@@ -1,4 +1,4 @@
-import { signup, signin, check, logout, verifyOtp, updateProfile } from "./authApi";
+import { signup, signin, check, logout, verifyOtp, updateProfile, support } from "./authApi";
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import toast from "react-hot-toast"
 
@@ -52,6 +52,23 @@ export const signinAuth = createAsyncThunk(
     }
   }
 );
+
+export const supportAuth = createAsyncThunk(
+  "auth/signin",
+  async (formData, thunkAPI) => {
+    try {
+      const data = await support(formData);
+      toast.success(data.message);
+      return data;
+    } catch (err) {
+      toast.error(err.message);
+      return thunkAPI.rejectWithValue(
+        err.response?.data?.message || err.message
+      );
+    }
+  }
+);
+
 
 export const updateProfileAuth = createAsyncThunk(
   "auth/update-profile",

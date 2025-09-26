@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 // import { images } from "../../libs/imageSample"
 import { selectProduct } from "../../features/products/productSelectors";
 import { useSelector } from "react-redux";
-import {Link} from "react-router-dom"
+import { Link } from "react-router-dom"
 export function Hero() {
     const [isVisible, setIsVisible] = useState(false);
 
@@ -10,13 +10,13 @@ export function Hero() {
         setIsVisible(true);
     }, []);
 
-    const products=useSelector(selectProduct);
-    const images=products.map(e=>{
-        if(e.images && e.images.length >= 1){
+    const products = useSelector(selectProduct);
+    const images = products.map(e => {
+        if (e.images && e.images.length >= 1) {
             return e.images[1]
         }
     })
-    
+
     const [current, setCurrent] = useState(0);
 
     useEffect(() => {
@@ -27,33 +27,26 @@ export function Hero() {
     }, [images.length]);
 
     return (
-        <section className="relative overflow-hidden py-16 md:py-24 md:px-20">
-            <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center justify-between gap-12">
+        <section className="relative bg-gradient-to-b from-primary/10 via-background to-background  py-16 md:py-24 md:px-20 overflow-hidden">
+            <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-12 items-center">
 
-                <div className={`flex-1 max-w-xl space-y-6 transition-opacity duration-700 ${isVisible ? "slide-in-left" : "opacity-0"}`}>
-                    <div className="inline-flex items-center px-3 py-1.5 rounded-full glass text-sm">
-                        <div className="w-2 h-2 bg-accent rounded-full mr-2 pulse" />
-                        <span>✨ New Collection Available</span>
-                    </div>
-
-                    <h1 className="text-4xl md:text-5xl font-bold leading-tight tracking-tight">
-                        <span className="text-gradient">CltX</span> <br />
-                        <span className="text-textPrimary">Your Destination for</span> <br />
-                        <span className="text-primary">Trendy & Timeless Fashion</span>
+                <div className="space-y-6 animate-fadeIn">
+                    <span className="inline-flex items-center px-4 py-2 rounded-full bg-primary/10 text-primary text-sm font-medium">
+                        ✨ Fresh Arrivals Just Landed
+                    </span>
+                    <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight leading-tight">
+                        Elevate Your Style with <span className="text-primary">CltX</span>
                     </h1>
-                    <p className="text-lg text-textSecondary mt-4 max-w-xl">
-                        From everyday essentials to statement pieces, CltX brings you designs that
-                        blend innovation, quality, and unmatched style.
+                    <p className="text-lg md:text-xl text-muted-foreground max-w-xl">
+                        Discover exclusive collections crafted to blend innovation, quality, and timeless appeal.
                     </p>
-
-
-                    <div className="flex justify-center sm:justify-start sm:flex-row gap-8 md:gap-4 pt-2">
-                        <Link to={"/products"}>
-                            <button className="btn-gradient text-white px-6 py-3 rounded-xl font-semibold text-base shadow-md hover:shadow-lg transition">
-                            Shop Collection
-                        </button>
+                    <div className="flex flex-wrap gap-4 pt-4">
+                        <Link to="/products">
+                            <button className="px-6 py-3 bg-primary text-white rounded-xl font-semibold shadow hover:shadow-lg transition-transform transform hover:scale-105">
+                                Shop Now
+                            </button>
                         </Link>
-                        <button className="glass text-primary px-6 py-3 rounded-xl font-semibold text-base hover:bg-opacity-30 transition">
+                        <button className="px-6 py-3 border border-primary text-primary rounded-xl font-semibold hover:bg-primary/10 transition-transform transform hover:scale-105">
                             Watch Story
                         </button>
                     </div>

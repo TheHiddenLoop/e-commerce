@@ -71,11 +71,11 @@ export const AuthorCard = () => {
     <div ref={ref} className={`bg-bgPrimary rounded-3xl p-4 border-border shadow-md relative overflow-hidden max-w-4xl mx-auto w-full ${inView ? "fade-in" : "opacity-0 translate-y-8"}`}>
 
       <div className="relative z-10 grid grid-cols-1 md:grid-cols-3 gap-6 ">
-        <div className="flex justify-center md:justify-start rounded-2xl md:col-span-1 overflow-hidden">
+        <div className="flex w-[260px] h-[260px] justify-center md:justify-start rounded-2xl md:col-span-1 overflow-hidden">
           <img
-            src="https://i.pinimg.com/736x/d9/21/4a/d9214ad661353dffe8846da342e1a004.jpg"
+            src="https://res.cloudinary.com/dwbbklguy/image/upload/v1758889315/20250926_1750_Imaginary_Young_Male_simple_compose_01k62ze3ajej4sy30nnny03q9w_oldcjw.png"
             alt="Sarah Johnson"
-            className="w-70 h-70 rounded-2xl object-cover transition-transform duration-300 hover:scale-105"
+            className="w-[260px] h-[260px] rounded-2xl object-cover transition-transform duration-300 hover:scale-105"
           />
         </div>
 

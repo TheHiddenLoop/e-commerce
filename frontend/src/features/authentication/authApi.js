@@ -43,6 +43,17 @@ export const signin = async (formData) => {
   }
 };
 
+export const support = async (formData) => {
+  try {
+    const res = await axiosInstance.post("/auth/support", formData);
+    return res.data; 
+  } catch (err) {
+    const message =
+      err.response?.data?.message || err.message || "Signin failed";
+    throw new Error(message);
+  }
+};
+
 export const logout = async () => {
   try {
     const res = await axiosInstance.post("auth/logout");    

@@ -1,13 +1,14 @@
-import { useInView } from "react-intersection-observer";
-import { Link } from "react-router-dom";
-import { ShoppingCart, ShoppingBag } from "lucide-react";
+import placeHolder from "../assets/fallback.svg"
+import { useInView } from "react-intersection-observer"
+import { Link } from "react-router-dom"
+import { Plus, ShoppingBag } from "lucide-react"
 
 export function ProductCard({
   id,
   name,
-  description,
   image,
   price,
+  brand,
   onclick,
   buy,
   cart,
@@ -16,54 +17,64 @@ export function ProductCard({
   const { ref, inView } = useInView({
     triggerOnce: true,
     threshold: 0.2,
-  });
+  })
 
   return (
     <div
       ref={ref}
-      className={`flex flex-col bg-bgPrimary rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-700 transform w-full sm:h-[500px] max-w-xs sm:max-w-[14rem] md:max-w-[15rem] 
-        ${inView ? "fade-in" : ""}`}
+      className={` bg-bgPrimary rounded-2xl shadow-sm hover:shadow-md transition-all duration-700 w-full h-[350px] max-w-[280px] overflow-hidden ${inView ? "fade-in" : ""
+        }`}
     >
-      <div className="p-3">
-        <div className="h-56 md:h-64 rounded-md w-full overflow-hidden">
-          <img
-            src={image}
-            alt={name}
-            className="w-full h-full object-cover transition-transform rounded-md duration-500 hover:scale-105"
-          />
-        </div>
+      <div className="relative bg-sky-300 h-48 max-w-[280px] overflow-hidden">
+        <img
+          src={image || placeHolder}
+          alt={name}
+          onError={(e) => {
+            e.currentTarget.src = placeHolder; 
+          }}
+          className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+        />
       </div>
 
-      <div className="p-4 flex flex-col flex-1 justify-between">
-        <div>
-          <h3 className="text-lg font-semibold text-textPrimary mb-1">{name}</h3>
-          <p className="text-sm text-textSecondary mb-3">{description}</p>
+      <div className="p-4 flex flex-col h-[150px]">
+        <div className="flex-1">
+          <div className="flex items-start justify-between mb-2">
+            <div className="flex-1">
+              <h3 className="font-poppins font-semibold text-textPrimary text-base leading-tight mb-1">
+                {name}
+              </h3>
+              <p className="text-sm text-textSecondary mt-3">{brand}</p>
+            </div>
+
+            {cart && (
+              <button
+                onClick={onclick}
+                className="w-6 h-6 rounded-full bg-primary text-white hover:bg-accent transition-colors duration-200 flex items-center justify-center ml-3 flex-shrink-0"
+              >
+                <Plus className="w-5 h-5" />
+              </button>
+            )}
+          </div>
         </div>
 
-        <div className="flex items-center justify-between mt-2">
-          <p className="text-primary font-bold text-lg">{price}</p>
+        <div className="flex items-center justify-between mt-4">
+          <span className="font-poppins font-bold text-lg text-textPrimary">
+            ₹{price}
+          </span>
           <div className="flex gap-2">
             {buy && (
               <Link to={`/product-details/${id}`}>
                 <button
                   onClick={onbuy}
-                  className="btn-gradient text-white p-2 rounded-xl shadow-md hover:shadow-lg transition flex items-center justify-center"
+                  className="bg-primary hover:bg-accent text-white h-[30px] w-[40px] rounded-lg text-sm font-medium flex items-center justify-center transition-colors duration-200"
                 >
-                  Buy
+                  <ShoppingBag className="w-4 h-4" />
                 </button>
               </Link>
-            )}
-            {cart && (
-              <button
-                onClick={onclick}
-                className="btn-gradient text-white p-2 rounded-xl shadow-md hover:shadow-lg transition flex items-center justify-center"
-              >
-                <ShoppingCart size={18} />
-              </button>
             )}
           </div>
         </div>
       </div>
     </div>
-  );
+  )
 }

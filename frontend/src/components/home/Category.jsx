@@ -4,18 +4,20 @@ import { categories } from "../../libs/product";
 import { useRef } from "react";
 import { useSelector } from "react-redux";
 import { selectProduct } from "../../features/products/productSelectors";
+import { Link } from "react-router-dom";
 
 export function Category() {
     const carouselRef = useRef(null);
 
-    const products=useSelector(selectProduct);
-    
+    const products = useSelector(selectProduct);
+
     const filteredProduct = products.reduce((acc, e) => {
-    if (!acc.some(item => item.category === e.subCategory)) {
-        acc.push({ category: e.subCategory, image: e.images[0] });
-    }
-    return acc;
-    }, []);    
+        if (!acc.some(item => item.category === e.category)) {
+            acc.push({ category: e.category, image: e.images[0] });
+        }
+        return acc;
+    }, []);
+
 
 
     const scroll = (direction) => {
@@ -35,18 +37,19 @@ export function Category() {
                 <h2 className="text-3xl md:text-4xl font-bold text-textPrimary mb-4 sm:mb-0">
                     Shop Our Collection
                 </h2>
-                <button
+                <Link to={"/products"}><button
                     className="flex items-center gap-2 font-semibold bg-primary text-white px-5 py-2 rounded-full shadow-sm hover:shadow-md transition-shadow ml-[30%] my-3 sm:my-0 md:ml-0"
                 >
                     Show All Products
                     <ArrowRight size={20} />
                 </button>
+                </Link>
             </div>
 
             <div className="relative overflow-hidden">
                 <div
                     ref={carouselRef}
-                    className="scrollBar flex gap-6 overflow-x-auto scroll-smooth no-scrollbar sm:mx-5 md:mx-[80px] py-2"
+                    className="scrollBar flex gap-6 overflow-x-auto scroll-smooth no-scrollbar sm:mx-5 py-2"
                 >
                     {filteredProduct.map((item, index) => (
                         <div key={index} className="flex-shrink-0">

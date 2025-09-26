@@ -28,7 +28,7 @@ export default function CheckoutPage() {
 
   const location = useLocation();
   const { orderDetails } = location.state || {};
-  console.log(orderDetails);
+  console.log(authUser);
   
 
   const savedAddress = {
