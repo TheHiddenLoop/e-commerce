@@ -93,7 +93,12 @@ export const viewProduct = async (req, res) => {
   try {
     const { id } = req.params;
 
-    const product = await Product.findById(id); 
+    const product = await Product.findById(id)
+  .populate({
+    path: "reviews.user",
+    select: "name profilePic"
+  });
+
 
     if (!product) {
       return res.status(404).json({

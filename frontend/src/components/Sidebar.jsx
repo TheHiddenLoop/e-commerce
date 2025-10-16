@@ -1,14 +1,12 @@
-import { X, Home, ShoppingBag, Grid3X3, Zap, ShoppingCart, User, Headphones } from "lucide-react";
+import { X, Home, ShoppingBag, Grid3X3, Zap, ShoppingCart, User, Headphones, LogOut } from "lucide-react";
+import { Link } from "react-router-dom";
 
 export function Sidebar({ isOpen, onClose }) {
   const menuItems = [
-    { icon: Home, label: "Home" },
-    { icon: ShoppingBag, label: "Shop" },
-    { icon: Grid3X3, label: "Categories" },
-    { icon: Zap, label: "Deals" },
-    { icon: ShoppingCart, label: "Cart" },
-    { icon: User, label: "Profile" },
-    { icon: Headphones, label: "Support" },
+    { icon: Home, label: "Home", to:"/" },
+    { icon: ShoppingBag, label: "Shop", to:"/products" },
+    { icon: ShoppingCart, label: "Cart", to:"/cart" },
+    { icon: User, label: "Profile", to:"/user/profile" },
   ];
 
   return (
@@ -41,7 +39,7 @@ export function Sidebar({ isOpen, onClose }) {
           {menuItems.map((item) => {
             const Icon = item.icon;
             return (
-              <div
+              <Link to={item.to}
                 key={item.label}
                 className="flex items-center space-x-3 p-3 font-semibold rounded-lg hover:bg-ring cursor-pointer transition-colors duration-200 group"
               >
@@ -52,19 +50,14 @@ export function Sidebar({ isOpen, onClose }) {
                 <span className="text-textPrimary  group-hover:text-accent font-poppins transition-colors duration-200">
                   {item.label}
                 </span>
-              </div>
+              </Link>
             );
           })}
         </nav>
 
         <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-border">
-          <div className="bg-primary/10 border border-primary/20 rounded-lg p-3">
-            <div className="text-sm font-medium text-textPrimary font-poppins">
-              Premium Account
-            </div>
-            <div className="text-xs text-textSecondary mt-1">
-              Enjoy exclusive benefits
-            </div>
+          <div className="bg-primary/10 hover:bg-ring border border-primary/20 rounded-lg p-3">
+            <button className="flex items-center gap-2"><LogOut /> Logout</button>
           </div>
         </div>
       </div>

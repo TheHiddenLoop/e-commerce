@@ -116,6 +116,7 @@ export function ProductDetails() {
         sizes={product.sizes || []}
         onAddCart={handleAddCart}
         onBuy={handleBuy}
+        reviews={product.reviews}
       />
 
       <div className="w-full h-[1px] bg-border mt-7"></div>

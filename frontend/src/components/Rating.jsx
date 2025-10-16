@@ -32,7 +32,6 @@ export default function Rating({ id, product, currentUser }) {
 
     dispatch(reviewProduct({ id, formData: newRating }));
 
-    setRatings([newRating, ...ratings]);
     setComment("");
     setStars(0);
   };
@@ -62,7 +61,7 @@ export default function Rating({ id, product, currentUser }) {
             value={comment}
             onChange={(e) => setComment(e.target.value)}
             placeholder="Write your review..."
-            className="w-full px-3 sm:px-4 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary bg-bgPrimary text-textPrimary min-h-[80px] sm:min-h-[100px] text-sm sm:text-base"
+            className="w-full px-3 resize-none sm:px-4 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary bg-bgPrimary text-textPrimary min-h-[80px] sm:min-h-[100px] text-sm sm:text-base"
           />
         </div>
 
@@ -96,11 +95,11 @@ export default function Rating({ id, product, currentUser }) {
             <div className="flex items-start sm:items-center justify-between mb-2 gap-2">
               <div className="flex items-center gap-2 min-w-0 flex-1">
                 <img
-                  src={r.profilePic}
-                  alt={r.user}
+                  src={r.user.profilePic}
+                  alt={r.user.name}
                   className="w-8 h-8 rounded-full object-cover border flex-shrink-0"
                 />
-                <span className="font-semibold text-textPrimary text-sm sm:text-base truncate">{r.user}</span>
+                <span className="font-semibold text-textPrimary text-sm sm:text-base truncate">{r.user.name}</span>
               </div>
               <div className="flex space-x-1 flex-shrink-0">
                 {[1, 2, 3, 4, 5].map((i) => (

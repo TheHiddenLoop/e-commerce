@@ -3,8 +3,21 @@ import { motion } from "framer-motion";
 import { Star } from "lucide-react";
 import { Link } from "react-router-dom";
 
-export function ProductDetailCard({ images, name, sizes, originalPrice, discountPercent, description, colors, onAddCart, onBuy, orderDetails }) {
-  const discountedPrice = originalPrice - (originalPrice * discountPercent) / 100;
+export function ProductDetailCard({
+  images,
+  name,
+  sizes,
+  originalPrice,
+  discountPercent,
+  description,
+  colors,
+  onAddCart,
+  onBuy,
+  orderDetails,
+  reviews,
+}) {
+  const discountedPrice =
+    originalPrice - (originalPrice * discountPercent) / 100;
 
   const [selectedColor, setSelectedColor] = useState(null);
   const [selectedSize, setSelectedSize] = useState(null);
@@ -12,21 +25,22 @@ export function ProductDetailCard({ images, name, sizes, originalPrice, discount
   const [quantity, setQuantity] = useState(1);
 
   useEffect(() => {
-  setSelectedColor(null);
-  setSelectedImage(null);
-  setSelectedSize(null);
+    setSelectedColor(null);
+    setSelectedImage(null);
+    setSelectedSize(null);
 
-  if (images && images.length > 0) {
-    setSelectedImage(images[0]);
-  }
-  if (colors && colors.length > 0) {
-    setSelectedColor(colors[0]);
-  }
-  if (sizes && sizes.length > 0) {
-    setSelectedSize(sizes[0]); // ✅ correct setter
-  }
-}, [images, colors, sizes]); 
+    if (images && images.length > 0) {
+      setSelectedImage(images[0]);
+    }
+    if (colors && colors.length > 0) {
+      setSelectedColor(colors[0]);
+    }
+    if (sizes && sizes.length > 0) {
+      setSelectedSize(sizes[0]); // correct setter
+    }
+  }, [images, colors, sizes]);
 
+  const average = (reviews.reduce((acc, curr) => (acc += curr.rating), 0))/reviews.length;
 
   return (
     <div className="text-textPrimary flex flex-col lg:flex-row gap-6 lg:p-6">
@@ -52,12 +66,20 @@ export function ProductDetailCard({ images, name, sizes, originalPrice, discount
 
           <div className="flex items-center gap-2 mb-3">
             <div className="flex text-warning">
-              {[...Array(4)].map((_, i) => (
-                <Star key={i} size={16} className="sm:w-5 sm:h-5" fill="gold" stroke="gold" />
+              {[...Array(5)].map((_, i) => (
+                <Star
+                  key={i}
+                  size={16}
+                  className="sm:w-5 sm:h-5"
+                  fill={i < Math.round(average) ? "gold" : "none"} // Fill based on average
+                  stroke="gold"
+                />
               ))}
-              <Star size={16} className="sm:w-5 sm:h-5" />
             </div>
-            <span className="text-xs sm:text-sm text-textSecondary">(120 reviews)</span>
+
+            <span className="text-xs sm:text-sm text-textSecondary">
+              {reviews.length + " reviews"}
+            </span>
           </div>
 
           <div className="flex items-center gap-3 mb-3 font-semibold">
@@ -87,8 +109,11 @@ export function ProductDetailCard({ images, name, sizes, originalPrice, discount
               <span
                 key={i}
                 onClick={() => setSelectedColor(color)}
-                className={`h-6 w-6 sm:h-8 sm:w-8 flex items-center justify-center rounded-full border cursor-pointer transition ${selectedColor === color ? "ring-2 ring-primary" : "border-border"
-                  }`}
+                className={`h-6 w-6 sm:h-8 sm:w-8 flex items-center justify-center rounded-full border cursor-pointer transition ${
+                  selectedColor === color
+                    ? "ring-2 ring-primary"
+                    : "border-border"
+                }`}
                 style={{ backgroundColor: color.toLowerCase() }}
               >
                 {selectedColor === color && (
@@ -104,14 +129,17 @@ export function ProductDetailCard({ images, name, sizes, originalPrice, discount
                 key={i}
                 onClick={() => setSelectedSize(size)}
                 className={`h-8 w-8 sm:h-10 sm:w-10 flex items-center justify-center rounded-full border cursor-pointer transition text-sm sm:text-base
-                  ${selectedSize === size ? "bg-primary text-white ring-2 ring-primary" : "border-border text-gray-700"}
+                  ${
+                    selectedSize === size
+                      ? "bg-primary text-white ring-2 ring-primary"
+                      : "border-border text-gray-700"
+                  }
                 `}
               >
                 {size}
               </span>
             ))}
           </div>
-
 
           <div className="flex items-center gap-3 mb-4">
             <span className="font-medium text-sm sm:text-base">Quantity:</span>
@@ -142,8 +170,11 @@ export function ProductDetailCard({ images, name, sizes, originalPrice, discount
                 alt={`Thumbnail ${i}`}
                 whileHover={{ scale: 1.05 }}
                 onClick={() => setSelectedImage(img)}
-                className={`h-14 w-14 sm:h-16 sm:w-16 md:h-20 md:w-20 object-cover cursor-pointer rounded border transition ${selectedImage === img ? "ring-2 ring-primary" : "border-border"
-                  }`}
+                className={`h-14 w-14 sm:h-16 sm:w-16 md:h-20 md:w-20 object-cover cursor-pointer rounded border transition ${
+                  selectedImage === img
+                    ? "ring-2 ring-primary"
+                    : "border-border"
+                }`}
               />
             ))}
           </div>
@@ -156,13 +187,13 @@ export function ProductDetailCard({ images, name, sizes, originalPrice, discount
             >
               Add to Cart
             </motion.button>
-              <motion.button
-                whileTap={{ scale: 0.95 }}
-                onClick={() => onBuy({ selectedColor, quantity, selectedSize })}
-                className="w-full sm:w-auto px-4 sm:px-6 py-2 sm:py-3 bg-accent text-white rounded-lg sm:rounded-xl shadow hover:opacity-90"
-              >
-                Buy Now
-              </motion.button>
+            <motion.button
+              whileTap={{ scale: 0.95 }}
+              onClick={() => onBuy({ selectedColor, quantity, selectedSize })}
+              className="w-full sm:w-auto px-4 sm:px-6 py-2 sm:py-3 bg-accent text-white rounded-lg sm:rounded-xl shadow hover:opacity-90"
+            >
+              Buy Now
+            </motion.button>
           </div>
         </div>
       </div>

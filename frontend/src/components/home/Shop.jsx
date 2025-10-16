@@ -43,14 +43,16 @@ export default function ShopCarousel() {
       </div>
 
       <div className="grid gap-6 sm:gap-8 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-        {filterdProduct.slice(0, visibleCount).map((item, index) => (
+        {filterdProduct.slice(0, visibleCount).map((item) => (
           <ProductCard
-            key={index}
+            key={item._id}
             image={item.images[0]}
             name={item.name}
             description={item.description}
             price={item.price}
             cart={true}
+            buy={true}
+            id={item._id}
             brand={item.brand}
             onclick={() => handleAddCart(item)}
           />
