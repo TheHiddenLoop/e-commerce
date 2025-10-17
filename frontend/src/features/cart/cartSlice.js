@@ -70,9 +70,9 @@ const cartSlice = createSlice({
       })
       .addCase(addCart.fulfilled, (state, action) => {
         state.status = "succeeded";
-        state.carts = action.payload.items || action.payload;
-        state.count = action.payload.items.length || 0;
-        state.total = action.payload.totalPrice || 0;
+        state.carts = action.payload?.items || action.payload;
+        state.count = action.payload?.items.length || 0;
+        state.total = action.payload?.totalPrice || 0;
       })
       .addCase(addCart.rejected, (state, action) => {
         state.status = "failed";
@@ -86,7 +86,7 @@ const cartSlice = createSlice({
         state.status = "succeeded";
         state.carts = action.payload || action.payload;
         state.count = action.payload?.items?.length || 0;
-        state.total = action.payload.totalPrice || 0;
+        state.total = action.payload?.totalPrice || 0;
       })
       .addCase(allCart.rejected, (state, action) => {
         state.status = "failed";
@@ -99,8 +99,8 @@ const cartSlice = createSlice({
       .addCase(removeCart.fulfilled, (state, action) => {
         state.status = "succeeded";
         state.carts = action.payload;
-        state.count = action.payload.items.length || 0;
-        state.total = action.payload.totalPrice || 0;
+        state.count = action.payload?.items.length || 0;
+        state.total = action.payload?.totalPrice || 0;
       })
       .addCase(removeCart.rejected, (state, action) => {
         state.status = "failed";
