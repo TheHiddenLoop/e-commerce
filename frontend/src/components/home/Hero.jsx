@@ -10,9 +10,11 @@ export function Hero() {
     }, []);
 
     const products = useSelector(selectProduct);
-    const images = products
-  .map(e => e.images?.[1] || e.images?.[0] || null)
-  .filter(Boolean);
+    const images = products.map(e => {
+        if (e?.images && e?.images.length >= 1) {
+            return e?.images[1]
+        }
+    })
 
     const [current, setCurrent] = useState(0);
 
