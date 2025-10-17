@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-// import { images } from "../../libs/imageSample"
 import { selectProduct } from "../../features/products/productSelectors";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom"
@@ -46,9 +45,9 @@ export function Hero() {
                                 Shop Now
                             </button>
                         </Link>
-                        <button className="px-6 py-3 border border-primary text-primary rounded-xl font-semibold hover:bg-primary/10 transition-transform transform hover:scale-105">
+                        <a href="#review" className="px-6 py-3 border border-primary text-primary rounded-xl font-semibold hover:bg-primary/10 transition-transform transform hover:scale-105">
                             Watch Story
-                        </button>
+                        </a>
                     </div>
                 </div>
 

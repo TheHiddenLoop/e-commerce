@@ -34,6 +34,10 @@
   --shadow-glass: 0 16px 64px 0 rgba(0, 0, 0, 0.8);
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 @layer utilities {
   html::-webkit-scrollbar {
     width: 10px;
