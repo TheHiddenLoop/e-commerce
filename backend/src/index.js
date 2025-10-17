@@ -12,13 +12,18 @@ import orderRouter from "./routes/orderRoutes.js";
 import { stripeWebhook } from "./controllers/webhookController.js";
 import adminRouter from "./routes/adminAuthRoutes.js";
 import path from "path"
-
+import { fileURLToPath } from "url";
 
 dotenv.config();
 connectDB();
 
 const PORT = process.env.PORT || 5000;
 const app = express();
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+
 app.use(cookieparser());
 app.use(cors({
   origin: process.env.FRONTEND_URL,
