@@ -11,6 +11,8 @@ import cartRouter from "./routes/cartRoutes.js";
 import orderRouter from "./routes/orderRoutes.js";
 import { stripeWebhook } from "./controllers/webhookController.js";
 import adminRouter from "./routes/adminAuthRoutes.js";
+import path from "path"
+
 
 dotenv.config();
 connectDB();
@@ -44,10 +46,9 @@ if (process.env.NODE_ENV === "production") {
   app.use(express.static(path.join(__dirname, "../frontend/dist")));
 
   app.get("*", (req, res) => {
-    res.sendFile(path.join(__dirname, "../frontend", "dist", "index.html"));
+    res.sendFile(path.join(__dirname, "../frontend/dist/index.html"));
   });
 }
-
 
 app.get("/", (req, res) => {
   res.send("API is running...");
