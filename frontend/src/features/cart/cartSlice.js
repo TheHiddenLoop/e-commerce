@@ -85,7 +85,7 @@ const cartSlice = createSlice({
       .addCase(allCart.fulfilled, (state, action) => {
         state.status = "succeeded";
         state.carts = action.payload || action.payload;
-        state.count = action.payload.items.length || 0;
+        state.count = action.payload?.items?.length || 0;
         state.total = action.payload.totalPrice || 0;
       })
       .addCase(allCart.rejected, (state, action) => {
