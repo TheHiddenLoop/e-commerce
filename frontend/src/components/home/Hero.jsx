@@ -10,11 +10,13 @@ export function Hero() {
     }, []);
 
     const products = useSelector(selectProduct);
-    const images = products.map(e => {
-        if (e?.images && e?.images.length >= 1) {
-            return e?.images[1]
-        }
-    })
+    const images = (products || []).map(e => {
+    if (e?.images?.length > 1) {
+        return e.images[1];
+    }
+    return null; // or placeholder image
+});
+
 
     const [current, setCurrent] = useState(0);
 
