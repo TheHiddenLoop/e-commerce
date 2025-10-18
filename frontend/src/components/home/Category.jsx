@@ -11,12 +11,18 @@ export function Category() {
 
     const products = useSelector(selectProduct);
 
-    const filteredProduct = products.reduce((acc, e) => {
-        if (!acc.some(item => item.category === e.category)) {
-            acc.push({ category: e.category, image: e.images[0] });
-        }
-        return acc;
-    }, []);
+    const filteredProduct = Array.isArray(products)
+  ? products.reduce((acc, e) => {
+      const category = e?.category || "Unknown";
+      const image = e?.images?.[0] || null;
+
+      if (!acc.some(item => item.category === category)) {
+        acc.push({ category, image });
+      }
+      return acc;
+    }, [])
+  : [];
+
 
 
 
