@@ -43,9 +43,13 @@ export default function Page() {
   const adminStatus = useSelector(selectAdminAuthStatusCheck);
 
   useEffect(() => {
-    dispatch(checkAuth());
-    dispatch(checkAdminAuth());
-  }, [dispatch]);
+  dispatch(checkAuth());
+}, [dispatch]);  // Runs ONLY for user
+
+useEffect(() => {
+  dispatch(checkAdminAuth());
+}, [dispatch]);  // Runs ONLY for admin
+
 
   // Show loader while either check is pending
   if (

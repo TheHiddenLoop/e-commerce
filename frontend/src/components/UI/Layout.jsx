@@ -3,14 +3,18 @@ import { Sidebar } from "../Sidebar";
 import { Navbar } from "../Navbar";
 import { useEffect, useState } from "react";
 import { allCart } from "../../features/cart/cartSlice";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { selectAuth } from "../../features/authentication/authSelectors";
 
 
 export default function Layout() {
   const [isOpen, setIsOpen] = useState(false);
+  const user = useSelector(selectAuth);
   const dispatch=useDispatch();
   useEffect(()=>{
-    dispatch(allCart());
+    if(user){
+      dispatch(allCart());
+    }
   },[]);
 
   return (

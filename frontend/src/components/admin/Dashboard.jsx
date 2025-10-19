@@ -13,7 +13,6 @@ export default function Dashboard() {
   useEffect(() => {
     dispatch(analyticalData());
   }, [dispatch])
-  console.log(data);
   const metrics = [
     {
       title: "Total Revenue",
