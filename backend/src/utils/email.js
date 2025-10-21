@@ -1,17 +1,16 @@
 import nodemailer from "nodemailer";
+import dotenv from "dotenv";
 
-export const sendOTPEmail = async (to, subject, html) => {
+dotenv.config();
+
+export const sendOTPEmail=async(to, subject, html)=>{
   const transporter = nodemailer.createTransport({
-    host: "smtp.gmail.com",
-    port: 465,
-    secure: true,
+    service: "gmail",
     auth: {
       user: process.env.GMAIL_USER,
       pass: process.env.GMAIL_PASS,
     },
-    connectionTimeout: 20000,
   });
-
   await transporter.sendMail({
     from: `"Auth Support" <${process.env.GMAIL_USER}>`,
     to,
