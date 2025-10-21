@@ -57,7 +57,7 @@ export const signup = async (req, res) => {
       existingUser.otpExpires = otpExpires;
       await existingUser.save();
 
-      await sendOTPEmail(email, otp);
+      await sendOTPEmail(email, "Your OTP for Signup", otp);
 
       return res.status(200).json({
         success: true,
