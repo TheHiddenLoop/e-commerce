@@ -1,8 +1,13 @@
 import User from "../models/user.js";
-import { userToken } from "../utils/generateToken.js"
-import bcrypt from "bcryptjs"
-import { sendOTPEmail } from "../utils/email.js"
-import { otpVerificationTemplate, passwordResetSuccessTemplate, resetPasswordTemplate, supportEmailTemplate } from "../utils/emailTemplets.js";
+import { userToken } from "../utils/generateToken.js";
+import bcrypt from "bcryptjs";
+import { sendOTPEmail } from "../utils/email.js";
+import {
+  otpVerificationTemplate,
+  passwordResetSuccessTemplate,
+  resetPasswordTemplate,
+  supportEmailTemplate,
+} from "../utils/emailTemplets.js";
 import { cloudinary } from "../utils/cloudinary.js";
 import streamifier from "streamifier";
 
@@ -36,17 +41,21 @@ export const signup = async (req, res) => {
         isVerified: false,
       });
 
-      const otpContent=otpVerificationTemplate(otp);
+      const otpContent = otpVerificationTemplate(otp);
 
-      await sendOTPEmail(email,"Your One-Time Password (OTP) for Verification" ,otpContent);
+      await sendOTPEmail(
+        email,
+        "Your One-Time Password (OTP) for Verification",
+        otpContent
+      );
 
       return res.status(201).json({
         success: true,
         message: "User registered. OTP sent to email.",
-          _id: newUser._id,
-          name: newUser.name,
-          email: newUser.email,
-          isVerified: false,
+        _id: newUser._id,
+        name: newUser.name,
+        email: newUser.email,
+        isVerified: false,
       });
     }
 
@@ -62,9 +71,9 @@ export const signup = async (req, res) => {
       return res.status(200).json({
         success: true,
         message: "User updated. OTP re-sent to email.",
-          _id: existingUser._id,
-          name: existingUser.name,
-          email: existingUser.email,
+        _id: existingUser._id,
+        name: existingUser.name,
+        email: existingUser.email,
       });
     }
 
@@ -72,7 +81,6 @@ export const signup = async (req, res) => {
       success: false,
       message: "User already exists and is verified. Please sign in.",
     });
-
   } catch (error) {
     console.error("Signup error:", error);
     return res.status(500).json({
@@ -82,9 +90,6 @@ export const signup = async (req, res) => {
     });
   }
 };
-
-
-
 
 export const login = async (req, res) => {
   try {
@@ -126,13 +131,14 @@ export const login = async (req, res) => {
 
     return res.status(200).json({
       success: true,
-      message: `Welcome back, ${user.name.charAt(0).toUpperCase() + user.name.slice(1)}!`,
-        _id: user._id,
-        name: user.name,
-        email: user.email,
-        isVerified: user.isVerified
+      message: `Welcome back, ${
+        user.name.charAt(0).toUpperCase() + user.name.slice(1)
+      }!`,
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      isVerified: user.isVerified,
     });
-
   } catch (error) {
     console.error("Login error:", error);
     return res.status(500).json({
@@ -145,7 +151,7 @@ export const login = async (req, res) => {
 
 export const verifyOtp = async (req, res) => {
   try {
-    const { email, otp } = req.body;    
+    const { email, otp } = req.body;
 
     if (!email || !otp) {
       return res.status(400).json({
@@ -178,18 +184,17 @@ export const verifyOtp = async (req, res) => {
     user.otpExpires = null;
 
     await user.save();
-    
-    userToken(user._id, res);//for token verification
-    
+
+    userToken(user._id, res); //for token verification
+
     return res.status(200).json({
       success: true,
       message: "Account verified successfully.",
-        _id: user._id,
-        name: user.name,
-        email: user.email,
-        isVerified: user.isVerified
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      isVerified: user.isVerified,
     });
-
   } catch (error) {
     console.error("OTP verification error:", error);
     return res.status(500).json({
@@ -200,10 +205,8 @@ export const verifyOtp = async (req, res) => {
   }
 };
 
-
-
 export const checkAuth = (req, res) => {
-  try {    
+  try {
     res.status(200).json(req.user);
   } catch (error) {
     console.log("Error in checkAuth controller", error.message);
@@ -211,17 +214,15 @@ export const checkAuth = (req, res) => {
   }
 };
 
-
-
 const generateToken2 = () => {
   return [...Array(30)].map(() => Math.random().toString(36)[2]).join("");
 };
 
-export const requestPasswordReset=async(req, res)=>{
+export const requestPasswordReset = async (req, res) => {
   try {
     const { email } = req.body;
 
-    if (!email ) {
+    if (!email) {
       return res.status(400).json({
         success: false,
         message: "Email is required.",
@@ -236,21 +237,24 @@ export const requestPasswordReset=async(req, res)=>{
         message: "User does not exist.",
       });
     }
-    const token=generateToken2();
-    user.resetPasswordToken=token;
-    user.resetPasswordExpires= Date.now() + 3600000; 
+    const token = generateToken2();
+    user.resetPasswordToken = token;
+    user.resetPasswordExpires = Date.now() + 3600000;
     await user.save();
 
-    const resetLink=`${process.env.FRONTEND_URL}/reset-password/${token}`
+    const resetLink = `${process.env.FRONTEND_URL}/reset-password/${token}`;
     console.log(resetLink);
-    
-    await sendOTPEmail(user.email,"Reset Your Password – Action Required",resetPasswordTemplate(resetLink))
+
+    await sendOTPEmail(
+      user.email,
+      "Reset Your Password – Action Required",
+      resetPasswordTemplate(resetLink)
+    );
 
     return res.status(200).json({
       success: true,
-      message: "Password reset link sent to your email"
+      message: "Password reset link sent to your email",
     });
-
   } catch (error) {
     console.error("Request password link error:", error);
     return res.status(500).json({
@@ -259,24 +263,23 @@ export const requestPasswordReset=async(req, res)=>{
       error: error.message,
     });
   }
-}
+};
 
-export const resetPassword=async (req, res) => {
+export const resetPassword = async (req, res) => {
   try {
     const { token, password } = req.body;
-    
-    if (!token || !password ) {
+
+    if (!token || !password) {
       return res.status(400).json({
         success: false,
         message: "Token and password are required.",
       });
     }
 
-    const user=await User.findOne({
-      resetPasswordToken:token,
-      resetPasswordExpires:{ $gt: Date.now() }
-    })
-    
+    const user = await User.findOne({
+      resetPasswordToken: token,
+      resetPasswordExpires: { $gt: Date.now() },
+    });
 
     if (!user) {
       return res.status(404).json({
@@ -285,20 +288,21 @@ export const resetPassword=async (req, res) => {
       });
     }
 
-    user.password=await bcrypt.hash(password,SALT_ROUNDS);
-    user.resetPasswordToken=null;
-    user.resetPasswordExpires=null;
+    user.password = await bcrypt.hash(password, SALT_ROUNDS);
+    user.resetPasswordToken = null;
+    user.resetPasswordExpires = null;
     await user.save();
-    
-  
-    
-    await sendOTPEmail(user.email,"Your Password Has Been Successfully Reset",passwordResetSuccessTemplate())
+
+    await sendOTPEmail(
+      user.email,
+      "Your Password Has Been Successfully Reset",
+      passwordResetSuccessTemplate()
+    );
 
     return res.status(200).json({
       success: true,
-      message: "Password reset successful"
+      message: "Password reset successful",
     });
-
   } catch (error) {
     console.error("Request password link error:", error);
     return res.status(500).json({
@@ -307,32 +311,42 @@ export const resetPassword=async (req, res) => {
       error: error.message,
     });
   }
-}
+};
 
 export const logout = async (req, res) => {
   try {
-    res.cookie("jwt", "", { maxAge: 0 });
-    res.status(200).json({ success:true, message: "Logged out successfully" });
+    res.cookie("jwt", "", {
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
+      expires: new Date(0),
+      path: "/",
+    });
+
+    res.status(200).json({ success: true, message: "Logged out successfully" });
   } catch (error) {
-    console.error('Logout error:', error.message);
-    res.status(500).json({ message: 'Server error during logout' });
+    console.error("Logout error:", error.message);
+    res.status(500).json({ message: "Server error during logout" });
   }
 };
 
-
 function uploadToCloudinary(fileBuffer) {
   return new Promise((resolve, reject) => {
-    const stream = cloudinary.uploader.upload_stream({ folder: "products" }, (error, result) => {
-      if (error) reject(error); else resolve(result);
-    });
+    const stream = cloudinary.uploader.upload_stream(
+      { folder: "products" },
+      (error, result) => {
+        if (error) reject(error);
+        else resolve(result);
+      }
+    );
     streamifier.createReadStream(fileBuffer).pipe(stream);
   });
 }
 
-
 export const updateProfile = async (req, res) => {
   try {
-    const { name, phone, dob, address, city, state, postalCode, country } = req.body;
+    const { name, phone, dob, address, city, state, postalCode, country } =
+      req.body;
     const userId = req.user._id;
 
     const user = await User.findById(userId);
@@ -354,7 +368,7 @@ export const updateProfile = async (req, res) => {
         state: state || user.address?.state,
         postalCode: postalCode || user.address?.postalCode,
         country: country || user.address?.country,
-        phone:phone || user.address?.phone
+        phone: phone || user.address?.phone,
       };
     }
 
@@ -365,7 +379,6 @@ export const updateProfile = async (req, res) => {
     res.status(500).json({ message: "Server error during profile update" });
   }
 };
-
 
 export const supportUser = async (req, res) => {
   try {
@@ -386,13 +399,14 @@ export const supportUser = async (req, res) => {
       body
     );
 
-
     res.status(200).json({
       success: true,
       message: "Support message sent successfully!",
     });
   } catch (error) {
     console.error("Support user error:", error);
-    res.status(500).json({ message: "Server error while sending support message" });
+    res
+      .status(500)
+      .json({ message: "Server error while sending support message" });
   }
 };
