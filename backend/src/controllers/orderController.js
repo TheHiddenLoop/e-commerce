@@ -1,6 +1,6 @@
 import Stripe from "stripe";
 import User from "../models/user.js";
-import { Order } from "../models/order.js";
+import { Order, OrderTemp } from "../models/order.js";
 import Product from "../models/product.js";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
@@ -11,100 +11,83 @@ export const createCheckoutSession = async (req, res) => {
     const userId = req.user._id;
 
     let finalAddress;
-
     if (addressOption === "saved") {
       const user = await User.findById(userId).select("address");
-      const notEmptyeddress = Object.values(user.address).every(
-        (val) => val !== ""
-      );
-      if (!user || !user.address || !notEmptyeddress) {
-        return res
-          .status(400)
-          .json({ error: "No saved address found for this user" });
+      if (!user?.address || Object.values(user.address).some(v => !v)) {
+        return res.status(400).json({ error: "No saved address found" });
       }
       finalAddress = user.address;
     } else if (addressOption === "new") {
-      if (
-        !shippingAddress ||
-        !shippingAddress.address ||
-        !shippingAddress.city ||
-        !shippingAddress.state ||
-        !shippingAddress.postalCode ||
-        !shippingAddress.country ||
-        !shippingAddress.phone
-      ) {
-        return res
-          .status(400)
-          .json({ error: "All shipping address fields are required" });
+      const required = ["address", "city", "state", "country", "postalCode", "phone"];
+      if (!shippingAddress || required.some(f => !shippingAddress[f])) {
+        return res.status(400).json({ error: "All shipping fields required" });
       }
       finalAddress = shippingAddress;
-    } else {
-      return res.status(400).json({ error: "Invalid address option" });
+    } else return res.status(400).json({ error: "Invalid address option" });
+
+    const products = await Product.find({
+      _id: { $in: orderItems.map(i => i.id) }
+    });
+    if (products.length !== orderItems.length) {
+      return res.status(400).json({ error: "Invalid product detected" });
     }
 
-    const totalPrice = orderItems.reduce(
-      (acc, item) => acc + item.price * item.quantity,
-      0
-    );
+    let totalPrice = 0;
+    const validatedItems = orderItems.map(item => {
+      const product = products.find(p => p._id.toString() === item.id);
+      totalPrice += product.price * item.quantity;
+      return {
+        product: product._id,
+        name: product.name,
+        image: product.images?.[0],
+        price: product.price,
+        quantity: item.quantity,
+        color: item.selectedColor,
+        size: item.selectedSize,
+        seller: product.addedBy,
+      };
+    });
+
     const tax = Math.round(totalPrice * 0.08);
-    const deliveryCharge = 45;
-    const finalTotal = totalPrice + deliveryCharge + tax;
+    const shippingPrice = 45;
+    const finalTotal = totalPrice + tax + shippingPrice;
+
+    const tempOrder = await OrderTemp.create({
+      user: userId,
+      orderItems: validatedItems,
+      shippingAddress: finalAddress,
+      paymentMethod: "Stripe",
+      taxPrice: tax,
+      shippingPrice,
+      totalPrice: finalTotal,
+      isPaid: false,
+    });
+
+    const lineItems = [
+      ...validatedItems.map(item => ({
+        price_data: { currency: "inr", product_data: { name: item.name }, unit_amount: item.price * 100 },
+        quantity: item.quantity,
+      })),
+      { price_data: { currency: "inr", product_data: { name: "Tax (8%)" }, unit_amount: tax * 100 }, quantity: 1 },
+      { price_data: { currency: "inr", product_data: { name: "Shipping" }, unit_amount: shippingPrice * 100 }, quantity: 1 },
+    ];
 
     const session = await stripe.checkout.sessions.create({
-      payment_method_types: ["card"],
       mode: "payment",
-      line_items: [
-        ...orderItems.map((item) => ({
-          price_data: {
-            currency: "inr",
-            product_data: {
-              name: item.name,
-              metadata: {
-                productId: item.id,
-                color: item.selectedColor,
-                size: item.selectedSize,
-              },
-            },
-            unit_amount: item.price * 100,
-          },
-          quantity: item.quantity,
-        })),
-        {
-          price_data: {
-            currency: "inr",
-            product_data: {
-              name: "Delivery Charge",
-            },
-            unit_amount: deliveryCharge * 100,
-          },
-          quantity: 1,
-        },
-        {
-          price_data: {
-            currency: "inr",
-            product_data: { name: "Tax (8%)" },
-            unit_amount: tax * 100,
-          },
-          quantity: 1,
-        },
-      ],
-      metadata: {
-        userId: userId.toString(),
-        orderItems: JSON.stringify(orderItems),
-        shippingAddress: JSON.stringify(finalAddress),
-        totalPrice: finalTotal.toString(),
-        taxPrice: tax.toString(),
-      },
+      payment_method_types: ["card"],
+      line_items: lineItems,
+      metadata: { tempOrderId: tempOrder._id.toString() },
       success_url: `${process.env.FRONTEND_URL}/order/history?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${process.env.FRONTEND_URL}/cart`,
     });
 
     res.json({ url: session.url });
   } catch (err) {
-    console.error("Error creating checkout session:", err);
-    res.status(500).json({ error: err.message });
+    console.error("Checkout error:", err);
+    res.status(500).json({ error: "Checkout failed" });
   }
 };
+
 
 export const getAllOrders = async (req, res) => {
   try {

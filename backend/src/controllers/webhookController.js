@@ -1,81 +1,57 @@
 import Stripe from "stripe";
 import mongoose from "mongoose";
-import { Order } from "../models/order.js";
+import { Order, OrderTemp } from "../models/order.js";
 import Cart from "../models/cart.js";
 import Product from "../models/product.js"; // import Product to get seller
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
-export const stripeWebhook = async (req, res) => {  
+export const stripeWebhook = async (req, res) => {
   let event;
-
   try {
     const sig = req.headers["stripe-signature"];
     event = stripe.webhooks.constructEvent(req.body, sig, process.env.STRIPE_WEBHOOK_SECRET);
   } catch (err) {
-    console.error("Webhook signature verification failed:", err.message);
-    return res.status(400).send(`Webhook Error: ${err.message}`);
+    console.error("Webhook signature error:", err.message);
+    return res.status(400).send("Invalid signature");
   }
 
-  if (event.type === "checkout.session.completed") {
-    const session = event.data.object;
+  if (event.type !== "checkout.session.completed") return res.json({ received: true });
 
-    try {
-      const userId = session.metadata.userId;
-      const orderItems = JSON.parse(session.metadata.orderItems);
-      const shippingAddress = JSON.parse(session.metadata.shippingAddress);
-      const totalPrice = Number.parseFloat(session.metadata.totalPrice);
-      const taxPrice = Number.parseFloat(session.metadata.taxPrice);
+  const session = event.data.object;
+  const tempOrderId = session.metadata?.tempOrderId;
 
-      if (!userId || !orderItems || !shippingAddress) {
-        console.error("Missing required metadata in webhook");
-        return res.status(400).json({ error: "Missing required metadata" });
-      }
+  if (!tempOrderId) return res.status(400).send("tempOrderId missing");
 
-      const enrichedOrderItems = [];
-      for (const item of orderItems) {
-        const product = await Product.findById(item.id);
-        if (!product) {
-          console.warn(`Product not found: ${item.id}, skipping seller`);
-        }
+  try {
+    const tempOrder = await OrderTemp.findById(tempOrderId);
+    if (!tempOrder) return res.status(404).send("Temp order not found");
 
-        enrichedOrderItems.push({
-          product: new mongoose.Types.ObjectId(item.id),
-          name: item.name,
-          image: item.image,
-          price: item.price,
-          quantity: item.quantity,
-          color: item.selectedColor,
-          size: item.selectedSize,
-          seller: product ? product.addedBy : null, // assign seller
-        });
-      }
+    const order = await Order.create({
+      user: tempOrder.user,
+      orderItems: tempOrder.orderItems,
+      shippingAddress: tempOrder.shippingAddress,
+      paymentMethod: tempOrder.paymentMethod,
+      taxPrice: tempOrder.taxPrice,
+      shippingPrice: tempOrder.shippingPrice,
+      totalPrice: tempOrder.totalPrice,
+      isPaid: true,
+      paidAt: new Date(),
+      deliveryStatus: "Successful",
+      paymentResult: {
+        id: session.payment_intent,
+        status: session.payment_status,
+        email_address: session.customer_email,
+      },
+    });
 
-      const newOrder = new Order({
-        user: userId,
-        orderItems: enrichedOrderItems,
-        shippingAddress,
-        paymentMethod: "Stripe",
-        paymentResult: {
-          id: session.payment_intent,
-          status: session.payment_status,
-          email_address: session.customer_email,
-        },
-        taxPrice,
-        shippingPrice: 45,
-        totalPrice,
-        isPaid: true,
-        paidAt: new Date(),
-      });
+    await OrderTemp.findByIdAndDelete(tempOrderId);
+    await Cart.findOneAndDelete({ user: tempOrder.user });
 
-      await newOrder.save();
-      await Cart.findOneAndDelete({ user: userId });
-      console.log("Order stored in DB:", newOrder._id);
-    } catch (dbErr) {
-      console.error("Error saving order:", dbErr.message);
-      console.error("Full error:", dbErr);
-    }
+    console.log("Payment confirmed for order:", order._id);
+    res.json({ received: true });
+  } catch (err) {
+    console.error("Webhook processing failed:", err.message);
+    res.status(500).send("Webhook failed");
   }
-
-  res.json({ received: true });
 };
