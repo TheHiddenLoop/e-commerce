@@ -81,7 +81,7 @@ export default function AddProducts() {
         <div className="grid grid-cols-2 gap-4">
           <PlainInputField name="name" value={formData.name} onChange={handleChange} placeholder="Product Name" icon={ShoppingBag} />
           <PlainInputField name="description" value={formData.description} onChange={handleChange} placeholder="Description" icon={Tag} />
-          <PlainInputField name="features" value={formData.features} onChange={handleChange} placeholder="Key Features" icon={Layers} />
+          <PlainInputField name="features" value={formData.features} onChange={handleChange} placeholder="Key Features (comma separated)" icon={Layers} />
           <PlainInputField name="brand" value={formData.brand} onChange={handleChange} placeholder="Brand" icon={Tag} />
           <PlainInputField type="number" name="price" value={formData.price} onChange={handleChange} placeholder="Price" icon={DollarSign} />
           <PlainInputField type="number" name="discount" value={formData.discount} onChange={handleChange} placeholder="Discount (%)" icon={Percent} />

@@ -110,6 +110,7 @@ export function ProductDetails() {
         images={product.images || []}
         name={product.name}
         originalPrice={product.price}
+        features={product.features || []}
         discountPercent={product.discount}
         description={product.description}
         colors={product.colors || []}

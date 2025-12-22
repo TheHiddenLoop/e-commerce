@@ -15,6 +15,7 @@ export function ProductDetailCard({
   onBuy,
   orderDetails,
   reviews,
+  features
 }) {
   const discountedPrice =
     originalPrice - (originalPrice * discountPercent) / 100;
@@ -40,7 +41,7 @@ export function ProductDetailCard({
     }
   }, [images, colors, sizes]);
 
-  const average = (reviews.reduce((acc, curr) => (acc += curr.rating), 0))/reviews.length;
+  const average = (reviews.reduce((acc, curr) => (acc += curr.rating), 0)) / reviews.length;
 
   return (
     <div className="text-textPrimary flex flex-col lg:flex-row gap-6 lg:p-6">
@@ -99,21 +100,29 @@ export function ProductDetailCard({
           </p>
 
           <ul className="list-disc list-inside text-xs sm:text-sm text-textSecondary mb-4 space-y-1">
-            <li>High-quality durable material</li>
-            <li>Available in multiple colors</li>
-            <li>1-year warranty included</li>
+            {features?.length > 0 ? (
+              features.map((item, index) => (
+                <li key={index}>{item}</li>
+              ))
+            ) : (
+              <>
+                <li>High-quality durable material</li>
+                <li>Available in multiple colors</li>
+                <li>1-year warranty included</li>
+              </>
+            )}
           </ul>
+
 
           <div className="flex items-center gap-3 mb-4">
             {colors.map((color, i) => (
               <span
                 key={i}
                 onClick={() => setSelectedColor(color)}
-                className={`h-6 w-6 sm:h-8 sm:w-8 flex items-center justify-center rounded-full border cursor-pointer transition ${
-                  selectedColor === color
-                    ? "ring-2 ring-primary"
-                    : "border-border"
-                }`}
+                className={`h-6 w-6 sm:h-8 sm:w-10 flex items-center justify-center rounded-lg border cursor-pointer transition ${selectedColor === color
+                  ? "ring-2 ring-primary"
+                  : "border-border"
+                  }`}
                 style={{ backgroundColor: color.toLowerCase() }}
               >
                 {selectedColor === color && (
@@ -128,11 +137,10 @@ export function ProductDetailCard({
               <span
                 key={i}
                 onClick={() => setSelectedSize(size)}
-                className={`h-8 w-8 sm:h-10 sm:w-10 flex items-center justify-center rounded-full border cursor-pointer transition text-sm sm:text-base
-                  ${
-                    selectedSize === size
-                      ? "bg-primary text-white ring-2 ring-primary"
-                      : "border-border text-gray-700"
+                className={`h-8 w-8 sm:h-10 sm:w-14 flex items-center justify-center rounded-lg border cursor-pointer transition text-sm sm:text-base
+                  ${selectedSize === size
+                    ? "bg-primary text-white ring-2 ring-primary"
+                    : "border-border text-gray-700"
                   }
                 `}
               >
@@ -170,11 +178,10 @@ export function ProductDetailCard({
                 alt={`Thumbnail ${i}`}
                 whileHover={{ scale: 1.05 }}
                 onClick={() => setSelectedImage(img)}
-                className={`h-14 w-14 sm:h-16 sm:w-16 md:h-20 md:w-20 object-cover cursor-pointer rounded border transition ${
-                  selectedImage === img
-                    ? "ring-2 ring-primary"
-                    : "border-border"
-                }`}
+                className={`h-14 w-14 sm:h-16 sm:w-16 md:h-20 md:w-20 object-cover cursor-pointer rounded border transition ${selectedImage === img
+                  ? "ring-2 ring-primary"
+                  : "border-border"
+                  }`}
               />
             ))}
           </div>

@@ -14,7 +14,7 @@ function uploadToCloudinary(fileBuffer) {
 
 export const addProduct = async (req, res, next) => {
   try {
-    const { name, description, category, subCategory, brand, price, discount, sizes, colors, material, stock, tags, isFeatured, isActive } = req.body;
+    const { name, description, category, subCategory, brand, price, discount, sizes, colors, material, stock, tags, isFeatured, isActive, features } = req.body;
     const userId = req.user._id;
     const sku=generateSKU(name, category);
     if (!name || !description || !category || price === undefined || stock === undefined) {
@@ -31,7 +31,7 @@ export const addProduct = async (req, res, next) => {
       return res.status(400).json({ success: false, message: "Image is not provided." });
     }
 
-    const product = await Product.create({ name, description, category, subCategory, brand, price, discount, sizes:sizes.split(","), colors:colors.split(","), material, images, stock, sku, tags:tags.split(","), isFeatured, isActive, addedBy: userId });
+    const product = await Product.create({ name, description, features:features.split(","), category, subCategory, brand, price, discount, sizes:sizes.split(","), colors:colors.split(","), material, images, stock, sku, tags:tags.split(","), isFeatured, isActive, addedBy: userId });
 
     return res.status(201).json({ success: true, message: "Product created successfully", product });
   } catch (error) {
