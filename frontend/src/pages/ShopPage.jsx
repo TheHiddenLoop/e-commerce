@@ -8,6 +8,7 @@ import LoadingBar from "react-top-loading-bar";
 import { Loader2, Filter } from "lucide-react";
 import { FilterForm } from "../components/FilterForm";
 import { useLocation } from "react-router-dom";
+import useDebounce from "../hooks/useDebounce";
 
 export default function ShopPage() {
   const dispatch = useDispatch();
@@ -28,10 +29,23 @@ export default function ShopPage() {
 
   const loadingRef = useRef(null);
 
+  const debouncedSearch = useDebounce(filters.search, 500);
+  const debouncedMin = useDebounce(filters.minPrice, 500);
+  const debouncedMax= useDebounce(filters.maxPrice, 500);
+
+
   // Fetch products from server with filters
   useEffect(() => {
-    dispatch(getProducts(filters));
-  }, [dispatch, filters]);
+    dispatch(getProducts({ ...filters, minPrice: debouncedMin, search: debouncedSearch, maxPrice: debouncedMax }));
+  }, [
+    dispatch,
+    filters.category,
+    filters.brand,
+    debouncedMax,
+    debouncedMin,
+    filters.sortBy,
+    debouncedSearch,
+  ]);
 
   useEffect(() => {
     if (loading === "loading") loadingRef.current.continuousStart();

@@ -5,7 +5,6 @@ import Cart from "../models/cart.js";
 import Product from "../models/product.js"; // import Product to get seller
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
-
 export const stripeWebhook = async (req, res) => {
   let event;
   try {
@@ -20,12 +19,18 @@ export const stripeWebhook = async (req, res) => {
 
   const session = event.data.object;
   const tempOrderId = session.metadata?.tempOrderId;
-
   if (!tempOrderId) return res.status(400).send("tempOrderId missing");
 
   try {
     const tempOrder = await OrderTemp.findById(tempOrderId);
     if (!tempOrder) return res.status(404).send("Temp order not found");
+
+    // Idempotency check
+    const existingOrder = await Order.findOne({ "paymentResult.id": session.payment_intent });
+    if (existingOrder) {
+      console.log("Order already processed:", existingOrder._id);
+      return res.json({ received: true });
+    }
 
     const order = await Order.create({
       user: tempOrder.user,
@@ -51,7 +56,8 @@ export const stripeWebhook = async (req, res) => {
     console.log("Payment confirmed for order:", order._id);
     res.json({ received: true });
   } catch (err) {
-    console.error("Webhook processing failed:", err.message);
+    console.error("Webhook processing failed:", err);
     res.status(500).send("Webhook failed");
   }
 };
+

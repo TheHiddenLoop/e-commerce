@@ -42,7 +42,7 @@ export default function CheckoutPage() {
   };
 
 
-  const deliveryCharge = 45;
+  const deliveryCharge = orderDetails.total > 1000? 0 :45;
   const total = orderDetails.total + deliveryCharge;
 
   const handleChange = (e) => {
@@ -170,7 +170,7 @@ export default function CheckoutPage() {
           <h2 className="text-2xl font-bold text-textPrimary mb-6">Payable Amount</h2>
           <div className="bg-bgPrimary border border-border rounded-lg p-6 shadow-skin space-y-3">
             <div className="flex justify-between text-textSecondary">
-              <span>Subtotal</span>
+              <span>Subtotal (tax included)</span>
               <span>₹{orderDetails.total}</span>
             </div>
             <div className="flex justify-between text-textSecondary">

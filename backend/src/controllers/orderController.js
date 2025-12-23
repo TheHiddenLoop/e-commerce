@@ -48,8 +48,9 @@ export const createCheckoutSession = async (req, res) => {
       };
     });
 
+
     const tax = Math.round(totalPrice * 0.08);
-    const shippingPrice = 45;
+    const shippingPrice = totalPrice > 1000 ? 0 : 45;
     const finalTotal = totalPrice + tax + shippingPrice;
 
     const tempOrder = await OrderTemp.create({

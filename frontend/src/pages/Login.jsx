@@ -9,7 +9,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { googleOAuth, facebook } from "../libs/oAuth";
 
-export function Login() {
+export default function Login() {
   const [isVisible, setIsVisible] = useState(false);
   const [formData, setFormData] = useState({
     email: "",

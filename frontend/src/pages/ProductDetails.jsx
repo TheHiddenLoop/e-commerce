@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { Loader2 } from "lucide-react";
 import Rating from "../components/Rating";
 
-export function ProductDetails() {
+export default function ProductDetails() {
   const { id } = useParams();
   const dispatch = useDispatch();
   const product = useSelector(singleProduct);
@@ -72,14 +72,12 @@ export function ProductDetails() {
       : subtotal;
 
     const savings = originalTotal - subtotal;
-    const shipping = subtotal > 1000 ? 0 : 99;
     const tax = Math.round(subtotal * 0.08);
-    const total = subtotal + shipping + tax;
+    const total = subtotal  + tax;
 
     const orderData = {
       subtotal,
       savings,
-      shipping,
       tax,
       total,
       itemCount: data.quantity,

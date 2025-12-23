@@ -82,15 +82,14 @@ export const Cart = () => {
   );
 
   const savings = originalTotal - subtotal;
-  const shipping = subtotal > 1000 ? 0 : 99;
+  // const shipping = subtotal > 1000 ? 0 : 45;
   const tax = Math.round(subtotal * 0.08);
-  const total = subtotal + shipping + tax;
+  const total = subtotal + tax;
 
   
   const order = {
     subtotal,
     savings,
-    shipping,
     tax,
     total,
     itemCount: cartItems.length,
@@ -161,7 +160,7 @@ export const Cart = () => {
           {cartItems.length > 0 && (
             <OrderSummary
               subtotal={subtotal}
-              shipping={shipping}
+
               tax={tax}
               total={total}
               orderDetails={order}  

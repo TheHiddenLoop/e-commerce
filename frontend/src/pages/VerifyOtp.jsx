@@ -8,7 +8,7 @@ import {
 } from "../features/authentication/authSelectors";
 import { useNavigate } from "react-router-dom";
 
-export function VerifyOtp() {
+export default function VerifyOtp() {
   const inputRefs = useRef([]);
   const [otp, setOtp] = useState(Array(6).fill(""));
   const dispatch = useDispatch();
