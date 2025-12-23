@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Mail } from "lucide-react";
 import {Link} from "react-router-dom";
 
-export function ForgetPassword() {
+export default function ForgetPassword() {
   const [formData, setFormData] = useState({ email: "" });
 
   const handleSubmit = (e) => {

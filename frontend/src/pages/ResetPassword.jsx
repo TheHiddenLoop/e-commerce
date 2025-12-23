@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Lock, Eye, EyeOff } from "lucide-react";
 
-export function ResetPassword() {
+export default function ResetPassword() {
   const [isVisible, setIsVisible] = useState(false);
   const [formData, setFormData] = useState({ password: "", confirmPassword: "" });
 

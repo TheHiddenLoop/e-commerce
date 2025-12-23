@@ -8,7 +8,6 @@ import { store } from './app/store.js'
 import { Provider } from 'react-redux'
 
 createRoot(document.getElementById('root')).render(
-  <StrictMode>
     <BrowserRouter>
       <Provider store={store}>
         <DarkModeProvider>
@@ -16,5 +15,4 @@ createRoot(document.getElementById('root')).render(
         </DarkModeProvider>
       </Provider>
     </BrowserRouter>
-  </StrictMode>,
 )

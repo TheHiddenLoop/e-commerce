@@ -3,7 +3,6 @@ import { Link, Links } from "react-router-dom";
 
 export const OrderSummary = ({
   subtotal,
-  shipping,
   tax,
   total,
   onContinueShopping,
@@ -25,7 +24,7 @@ export const OrderSummary = ({
               </dd>
             </dl>
 
-            <dl className="flex items-center justify-between gap-4">
+            {/* <dl className="flex items-center justify-between gap-4">
               <dt className="text-base font-normal text-textSecondary">
                 Shipping
               </dt>
@@ -36,7 +35,7 @@ export const OrderSummary = ({
                   `₹${shipping}`
                 )}
               </dd>
-            </dl>
+            </dl> */}
 
             <dl className="flex items-center justify-between gap-4">
               <dt className="text-base font-normal text-textSecondary">Tax</dt>
@@ -53,7 +52,7 @@ export const OrderSummary = ({
         </div>
 
         <Link to={"/order"} state={{ orderDetails }}>
-          <button className="flex w-full items-center justify-center rounded-lg bg-primary px-5 py-2.5 text-sm font-medium text-white hover:bg-primary/90 focus:outline-none focus:ring-4 focus:ring-primary/30 transition-skin">
+          <button className="flex w-full items-center justify-center rounded-lg bg-primary mt-3 px-5 py-2.5 text-sm font-medium text-white hover:bg-primary/90 focus:outline-none focus:ring-4 focus:ring-primary/30 transition-skin">
             Proceed to Checkout
           </button>
         </Link>

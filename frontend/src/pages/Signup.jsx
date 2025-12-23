@@ -10,7 +10,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { googleOAuth, facebook } from "../libs/oAuth";
 
-export function Signup() {
+export default function Signup() {
   const [isVisible, setIsVisible] = useState(false);
   const [formData, setFormData] = useState({
     name: "",

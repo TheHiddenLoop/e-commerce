@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getProducts } from "../features/products/productSlice";
 import { useEffect } from "react";
 
-export function Home() {
+export default function Home() {
   const dispatch = useDispatch();
   useEffect(()=>{
     dispatch(getProducts());
